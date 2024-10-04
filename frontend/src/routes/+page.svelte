@@ -11,6 +11,7 @@
 	import PencilOutline from '$lib/components/outlines/pencil_outline.svelte';
 	import SaveOutline from '$lib/components/outlines/save_outline.svelte';
 	import TextOutline from '$lib/components/outlines/text_outline.svelte';
+	import Canvas from '$lib/components/canvas.svelte';
 
 	type PossibleActions =
 		| 'Triangle'
@@ -55,6 +56,7 @@
 		<TextOutline {activeAction} />
 	</ToolBarButton>
 </ToolBar>
+<Canvas height={600}></Canvas>
 
 <style lang="postcss">
 	:global(html) {
