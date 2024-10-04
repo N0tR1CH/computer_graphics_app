@@ -4,3 +4,6 @@ frontend/build
 
 # Mac os annoying file^^
 .DS_STORE
+
+# Vs code related
+.vscode
