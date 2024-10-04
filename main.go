@@ -7,6 +7,7 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
 	"github.com/wailsapp/wails/v2/pkg/options/mac"
+	"github.com/wailsapp/wails/v2/pkg/options/windows"
 )
 
 //go:embed all:frontend/build
@@ -31,6 +32,10 @@ func main() {
 		OnStartup:        app.startup,
 		Bind: []any{
 			app,
+		},
+		Windows: &windows.Options{
+			WindowIsTranslucent:  true,
+			WebviewIsTransparent: true,
 		},
 		Mac: &mac.Options{
 			WindowIsTranslucent:  true,
