@@ -1,3 +1,6 @@
 build/bin
 node_modules
-frontend/dist
+frontend/build
+
+# Mac os annoying file^^
+.DS_STORE

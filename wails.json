@@ -1,11 +1,12 @@
 {
   "$schema": "https://wails.io/schemas/config.v2.json",
-  "name": "computer_graphics_app",
-  "outputfilename": "computer_graphics_app",
-  "frontend:install": "npm install",
-  "frontend:build": "npm run build",
-  "frontend:dev:watcher": "npm run dev",
+  "name": "Draw Stuff",
+  "outputfilename": "Draw Stuff",
+  "frontend:install": "pnpm install",
+  "frontend:build": "pnpm run build",
+  "frontend:dev:watcher": "pnpm run dev",
   "frontend:dev:serverUrl": "auto",
+  "wailsjsdir": "./frontend/src/lib",
   "author": {
     "name": "N0tR1CH",
     "email": "damianrichter58@gmail.com"
