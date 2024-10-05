@@ -24,10 +24,7 @@
 		height: number;
 		width: number;
 	};
-	let shapes: Shape[] = [
-		{ name: 'Rectangle', x: 0, y: 0, height: 200, width: 200 },
-		{ name: 'Rectangle', x: 0, y: 300, height: 200, width: 200 }
-	];
+	let shapes: Shape[] = [];
 </script>
 
 <TopBar title={'Stuff ;)'} />
@@ -60,17 +57,10 @@
 		<TextOutline {activeAction} />
 	</ToolBarButton>
 </ToolBar>
-<Canvas height={500}>
+<Canvas height={500} bind:shapes>
 	{#each shapes as shape}
 		{#if shape.name === 'Rectangle'}
-			<Rectangle
-				fill="green"
-				stroke="green"
-				x={shape.x}
-				y={shape.y}
-				height={shape.height}
-				width={shape.width}
-			/>
+			<Rectangle fill="green" x={shape.x} y={shape.y} height={shape.height} width={shape.width} />
 		{/if}
 	{/each}
 </Canvas>

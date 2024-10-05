@@ -7,7 +7,6 @@
 	export let x: number;
 	export let y: number;
 	export let fill: string;
-	export let stroke: string;
 
 	type CanvasContext = {
 		registerDrawFunction: (fn: DrawFunction) => () => void;
@@ -16,7 +15,7 @@
 
 	const { registerDrawFunction, redrawCanvas } = getContext<CanvasContext>('canvas');
 
-	$: if ((height, width, x, y, fill, stroke)) {
+	$: if ((height, width, x, y, fill)) {
 		redrawCanvas();
 	}
 
@@ -31,10 +30,8 @@
 	function draw(ctx: CanvasRenderingContext2D | null) {
 		if (ctx) {
 			ctx.fillStyle = fill;
-			ctx.strokeStyle = stroke;
 			ctx.beginPath();
-			ctx.rect(x, y, height, width);
-			ctx.stroke();
+			ctx.rect(x, y, width, height);
 			ctx.fill();
 		}
 	}
