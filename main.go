@@ -36,6 +36,7 @@ func main() {
 		Windows: &windows.Options{
 			WindowIsTranslucent:  true,
 			WebviewIsTransparent: true,
+			DisableWindowIcon:    true,
 		},
 		Mac: &mac.Options{
 			WindowIsTranslucent:  true,

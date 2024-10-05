@@ -12,18 +12,22 @@
 	import SaveOutline from '$lib/components/outlines/save_outline.svelte';
 	import TextOutline from '$lib/components/outlines/text_outline.svelte';
 	import Canvas from '$lib/components/canvas.svelte';
-
-	type PossibleActions =
-		| 'Triangle'
-		| 'Rectangle'
-		| 'Circle'
-		| 'Move'
-		| 'Resize'
-		| 'StraightLine'
-		| 'Pencil'
-		| 'Text';
+	import Rectangle from '$lib/components/shapes/rectangle.svelte';
+	import type { PossibleActions } from '../types/possible_actions';
 
 	let activeAction: PossibleActions = 'Triangle';
+
+	type Shape = {
+		name: string;
+		x: number;
+		y: number;
+		height: number;
+		width: number;
+	};
+	let shapes: Shape[] = [
+		{ name: 'Rectangle', x: 0, y: 0, height: 200, width: 200 },
+		{ name: 'Rectangle', x: 0, y: 300, height: 200, width: 200 }
+	];
 </script>
 
 <TopBar title={'Stuff ;)'} />
@@ -56,7 +60,20 @@
 		<TextOutline {activeAction} />
 	</ToolBarButton>
 </ToolBar>
-<Canvas height={600}></Canvas>
+<Canvas height={500}>
+	{#each shapes as shape}
+		{#if shape.name === 'Rectangle'}
+			<Rectangle
+				fill="green"
+				stroke="green"
+				x={shape.x}
+				y={shape.y}
+				height={shape.height}
+				width={shape.width}
+			/>
+		{/if}
+	{/each}
+</Canvas>
 
 <style lang="postcss">
 	:global(html) {
