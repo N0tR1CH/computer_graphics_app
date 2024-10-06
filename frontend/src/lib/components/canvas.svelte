@@ -20,7 +20,7 @@
 	let isDrawing = false;
 	let isLive = false;
 
-	function drawing(event: MouseEvent) {
+	function drawing() {
 		if (isDrawing) {
 			console.log('I AM DRAWING');
 			isLive = true;
@@ -133,18 +133,18 @@
 	{width}
 	{height}
 	on:pointermove={handleMove}
-	on:mousedown={(e) => {
+	on:mousedown={() => {
 		console.log('Mouse pressed');
 		if (!isDrawing) {
 			isDrawing = true;
-			drawing(e);
+			drawing();
 		}
 	}}
-	on:mouseup={(e) => {
+	on:mouseup={() => {
 		console.log('Mouse released');
 		if (isDrawing) {
 			isDrawing = false;
-			drawing(e);
+			drawing();
 		}
 	}}
 ></canvas>
