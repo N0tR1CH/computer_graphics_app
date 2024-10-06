@@ -4,6 +4,8 @@
 	import type { PossibleActions } from '../../types/possible_actions';
 	import type { Shape } from '../../types/shape';
 
+	import { SaveCanvasImg } from '$lib/wailsjs/go/main/App';
+
 	export let width = 0;
 	export let height = 0;
 	export let shapes: Shape[];
@@ -206,6 +208,9 @@
 	function draw() {
 		if (ctx) {
 			ctx.clearRect(0, 0, canvas.width, canvas.height);
+			ctx.fillStyle = 'white';
+			ctx.fillRect(0, 0, canvas.width, canvas.height);
+			ctx.fillStyle = 'black';
 			drawFunctions.forEach((fn) => fn(ctx));
 		}
 	}
@@ -216,7 +221,10 @@
 
 	onMount(() => {
 		ctx = canvas.getContext('2d');
-		draw();
+		if (ctx) {
+			draw();
+			ctx.fillStyle = 'black';
+		}
 	});
 </script>
 
@@ -228,6 +236,12 @@
 	{height}
 	on:pointermove={handleMove}
 	on:mousedown={() => {
+		if (activeAction === 'Save') {
+			const dataURI = canvas.toDataURL('image/jpeg');
+			SaveCanvasImg(dataURI);
+			return;
+		}
+
 		console.log('Mouse pressed');
 		if (activeAction === 'Move' || activeAction === 'Resize') {
 			isLive = true;
@@ -262,6 +276,7 @@
 
 		if (activeAction === 'Pencil') {
 			isPencil = false;
+			return;
 		}
 
 		isDrawing = false;

@@ -6,4 +6,5 @@ export type PossibleActions =
   | 'Resize'
   | 'StraightLine'
   | 'Pencil'
+  | 'Save'
   | 'Text';
