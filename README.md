@@ -28,7 +28,11 @@ Narzędzia taskbara (znajdującego się na górnej stronie ekranu) zawierają:
 - Symbol tekstu np. Aa (pisanie tekstu na canvasie)
 ## Progres
 **Ad. 1**: 
-- [ ] Tworzenie, przesuwanie i skalowanie trójkątów, czworokątów, elips (należy zaimplementować przesuwanie i skalowanie obecnie rysowanej figury, jak w Paint
+- [x] Tworzenie, przesuwanie i skalowanie trójkątów, czworokątów, elips (należy zaimplementować przesuwanie i skalowanie obecnie rysowanej figury, jak w Paint
 	- [x] Tworzenie trójkątów, czworokątów i elips
 	- [x] Przesuwanie figur
-	- [ ] Skalowanie figur
+	- [x] Skalowanie figuro
+**Ad. 2**:
+- [x] Rysowanie prostych linii
+**Ad. 3**:
+- [ ] Rysowanie odręczne
