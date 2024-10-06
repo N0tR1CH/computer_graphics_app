@@ -21,4 +21,8 @@ export type Shape = {
   */
   x1: number;
   y1: number;
+  /* Text
+  *   - text
+  */
+  text: string;
 };
