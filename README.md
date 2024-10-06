@@ -35,4 +35,4 @@ Narzędzia taskbara (znajdującego się na górnej stronie ekranu) zawierają:
 **Ad. 2**:
 - [x] Rysowanie prostych linii
 **Ad. 3**:
-- [ ] Rysowanie odręczne
+- [x] Rysowanie odręczne
