@@ -15,6 +15,7 @@
 	import Rectangle from '$lib/components/shapes/rectangle.svelte';
 	import Triangle from '$lib/components/shapes/triangle.svelte';
 	import Ellipse from '$lib/components/shapes/ellipse.svelte';
+	import StraightLine from '$lib/components/shapes/straight_line.svelte';
 	import type { Shape } from '../types/shape';
 	import type { PossibleActions } from '../types/possible_actions';
 
@@ -53,7 +54,7 @@
 		<TextOutline {activeAction} />
 	</ToolBarButton>
 </ToolBar>
-<Canvas height={500} bind:shapes bind:activeAction>
+<Canvas height={500} width={1240} bind:shapes bind:activeAction>
 	{#each shapes as shape}
 		{#if shape.name === 'Rectangle'}
 			<Rectangle x={shape.x} y={shape.y} height={shape.height} width={shape.width} />
@@ -67,6 +68,8 @@
 				radius2={shape.radius2}
 				rotation={shape.rotation}
 			/>
+		{:else if shape.name === 'StraightLine'}
+			<StraightLine x={shape.x} y={shape.y} x1={shape.x1} y1={shape.y1} />
 		{/if}
 	{/each}
 </Canvas>

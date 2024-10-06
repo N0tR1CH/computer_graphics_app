@@ -15,4 +15,10 @@ export type Shape = {
   radius1: number;
   radius2: number;
   rotation: number;
+  /* Straight line
+  *   - x1
+  *   - y1
+  */
+  x1: number;
+  y1: number;
 };

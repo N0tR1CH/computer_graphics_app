@@ -30,6 +30,9 @@
 				case 'Circle':
 					newShapeName = 'Ellipse';
 					break;
+				case 'StraightLine':
+					newShapeName = 'StraightLine';
+					break;
 				default:
 					newShapeName = '';
 			}
@@ -49,7 +52,9 @@
 					base: 0,
 					radius1: 0,
 					radius2: 0,
-					rotation: 0
+					rotation: 0,
+					x1: 0,
+					y1: 0
 				}
 			];
 		} else {
@@ -69,51 +74,85 @@
 		}
 
 		const lastShape = shapes[shapes.length - 1];
+		const rectangleAction = () => {
+			const width = Math.abs(lastShape.x - cursorPosition.x);
+			const height = Math.abs(lastShape.y - cursorPosition.y);
+
+			if (shapes[shapes.length - 1].y - cursorPosition.y > 0) {
+				shapes[shapes.length - 1].height = -height;
+			} else {
+				shapes[shapes.length - 1].height = height;
+			}
+
+			if (lastShape.x - cursorPosition.x > 0) {
+				shapes[shapes.length - 1].width = -width;
+			} else {
+				shapes[shapes.length - 1].width = width;
+			}
+		};
+
+		const triangleAction = () => {
+			const base = Math.abs(lastShape.x - cursorPosition.x);
+			const height = Math.abs(lastShape.y - cursorPosition.y);
+			if (shapes[shapes.length - 1].y - cursorPosition.y > 0) {
+				shapes[shapes.length - 1].height = -height;
+			} else {
+				shapes[shapes.length - 1].height = height;
+			}
+
+			shapes[shapes.length - 1].base = base;
+		};
+
+		const circleAction = () => {
+			const radiusX = Math.abs(lastShape.x - cursorPosition.x);
+			const radiusY = Math.abs(lastShape.y - cursorPosition.y);
+
+			shapes[shapes.length - 1].radius1 = radiusX;
+			shapes[shapes.length - 1].radius2 = radiusY;
+			shapes[shapes.length - 1].rotation = Math.atan2(
+				cursorPosition.y - lastShape.y,
+				cursorPosition.x - lastShape.x
+			);
+		};
+
 		switch (activeAction) {
 			case 'Rectangle': {
-				const width = Math.abs(lastShape.x - cursorPosition.x);
-				const height = Math.abs(lastShape.y - cursorPosition.y);
-
-				if (shapes[shapes.length - 1].y - cursorPosition.y > 0) {
-					shapes[shapes.length - 1].height = -height;
-				} else {
-					shapes[shapes.length - 1].height = height;
-				}
-
-				if (lastShape.x - cursorPosition.x > 0) {
-					shapes[shapes.length - 1].width = -width;
-				} else {
-					shapes[shapes.length - 1].width = width;
-				}
+				rectangleAction();
 				break;
 			}
 			case 'Triangle': {
-				const base = Math.abs(lastShape.x - cursorPosition.x);
-				const height = Math.abs(lastShape.y - cursorPosition.y);
-				if (shapes[shapes.length - 1].y - cursorPosition.y > 0) {
-					shapes[shapes.length - 1].height = -height;
-				} else {
-					shapes[shapes.length - 1].height = height;
-				}
-
-				shapes[shapes.length - 1].base = base;
+				triangleAction();
 				break;
 			}
 			case 'Circle': {
-				const radiusX = Math.abs(lastShape.x - cursorPosition.x);
-				const radiusY = Math.abs(lastShape.y - cursorPosition.y);
-
-				shapes[shapes.length - 1].radius1 = radiusX;
-				shapes[shapes.length - 1].radius2 = radiusY;
-				shapes[shapes.length - 1].rotation = Math.atan2(
-					cursorPosition.y - lastShape.y,
-					cursorPosition.x - lastShape.x
-				);
+				circleAction();
 				break;
 			}
 			case 'Move': {
-				shapes[shapes.length - 1].x = cursorPosition.x;
+				if (cursorPosition.x) shapes[shapes.length - 1].x = cursorPosition.x;
 				shapes[shapes.length - 1].y = cursorPosition.y;
+				break;
+			}
+			case 'Resize': {
+				switch (lastShape.name) {
+					case 'Triangle': {
+						triangleAction();
+						break;
+					}
+					case 'Rectangle': {
+						rectangleAction();
+						break;
+					}
+					case 'Ellipse': {
+						circleAction();
+						break;
+					}
+				}
+				break;
+			}
+			case 'StraightLine': {
+				shapes[shapes.length - 1].x1 = cursorPosition.x;
+				shapes[shapes.length - 1].y1 = cursorPosition.y;
 				break;
 			}
 		}
@@ -155,11 +194,6 @@
 	}
 
 	onMount(() => {
-		canvas.style.width = '100%';
-		canvas.style.height = '100%';
-		canvas.width = canvas.offsetWidth;
-		canvas.height = canvas.offsetHeight;
-
 		ctx = canvas.getContext('2d');
 		draw();
 	});
@@ -174,7 +208,7 @@
 	on:pointermove={handleMove}
 	on:mousedown={() => {
 		console.log('Mouse pressed');
-		if (activeAction === 'Move') {
+		if (activeAction === 'Move' || activeAction === 'Resize') {
 			isLive = true;
 			return;
 		}
@@ -185,7 +219,7 @@
 
 		if (
 			shapes.length === 0 ||
-			['Triangle', 'Rectangle', 'Ellipse'].includes(shapes[shapes.length - 1].name)
+			['Triangle', 'Rectangle', 'Ellipse', 'StraightLine'].includes(shapes[shapes.length - 1].name)
 		) {
 			isDrawing = true;
 			drawing();
@@ -193,12 +227,14 @@
 	}}
 	on:mouseup={() => {
 		console.log('Mouse released');
-		if (activeAction === 'Move') {
+		if (activeAction === 'Move' || activeAction === 'Resize') {
 			isLive = false;
 		}
+
 		if (!isDrawing) {
 			return;
 		}
+
 		isDrawing = false;
 		if (['Triangle', 'Rectangle', 'Ellipse'].includes(shapes[shapes.length - 1].name)) {
 			activeAction = 'Move';
