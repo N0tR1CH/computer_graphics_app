@@ -14,6 +14,7 @@
 	let cursorPosition = { x: 0, y: 0 };
 	let isDrawing = false;
 	let isLive = false;
+	let isPencil = false;
 
 	function drawing() {
 		if (isDrawing && !isLive) {
@@ -68,6 +69,26 @@
 
 		cursorPosition.x = event.clientX - rect.left;
 		cursorPosition.y = event.clientY - rect.top;
+
+		if (activeAction === 'Pencil' && isPencil) {
+			shapes = [
+				...shapes,
+				{
+					name: 'StraightLine',
+					x: cursorPosition.x,
+					y: cursorPosition.y,
+					height: 0,
+					width: 0,
+					base: 0,
+					radius1: 0,
+					radius2: 0,
+					rotation: 0,
+					x1: cursorPosition.x,
+					y1: cursorPosition.y
+				}
+			];
+			return;
+		}
 
 		if (!isLive) {
 			return;
@@ -213,6 +234,10 @@
 			return;
 		}
 
+		if (activeAction === 'Pencil') {
+			isPencil = true;
+		}
+
 		if (isDrawing) {
 			return;
 		}
@@ -233,6 +258,10 @@
 
 		if (!isDrawing) {
 			return;
+		}
+
+		if (activeAction === 'Pencil') {
+			isPencil = false;
 		}
 
 		isDrawing = false;
