@@ -76,7 +76,6 @@
 			<Text x={shape.x} y={shape.y} text={shape.text} />
 		{/if}
 	{/each}
-	<Text x={40} y={40} text={'dsadas'} />
 </Canvas>
 {#if activeAction === 'Move'}
 	<p class="text-white text-center mt-4">
