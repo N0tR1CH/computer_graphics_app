@@ -3,6 +3,8 @@
 	import type { DrawFunction } from '../../types/draw_function';
 	import type { PossibleActions } from '../../types/possible_actions';
 	import type { Shape } from '../../types/shape';
+	import Rectangle from './shapes/rectangle.svelte';
+	import Ellipse from './shapes/ellipse.svelte';
 
 	export let width = 0;
 	export let height = 0;
@@ -168,17 +170,33 @@
 	on:pointermove={handleMove}
 	on:mousedown={() => {
 		console.log('Mouse pressed');
-		if (!isDrawing) {
+		if (isDrawing) {
+			return;
+		}
+
+		if (
+			shapes.length > 0 &&
+			['Triangle', 'Rectangle', 'Ellipse'].includes(shapes[shapes.length - 1].name)
+		) {
+			isDrawing = true;
+			drawing();
+		}
+
+		if (shapes.length == 0) {
 			isDrawing = true;
 			drawing();
 		}
 	}}
 	on:mouseup={() => {
 		console.log('Mouse released');
-		if (isDrawing) {
-			isDrawing = false;
-			drawing();
+		if (!isDrawing) {
+			return;
 		}
+		isDrawing = false;
+		if (['Triangle', 'Rectangle', 'Ellipse'].includes(shapes[shapes.length - 1].name)) {
+			activeAction = 'Move';
+		}
+		drawing();
 	}}
 ></canvas>
 <slot />
