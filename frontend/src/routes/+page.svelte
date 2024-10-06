@@ -56,7 +56,7 @@
 		<TextOutline {activeAction} />
 	</ToolBarButton>
 </ToolBar>
-<Canvas height={500} width={1240} bind:shapes bind:activeAction>
+<Canvas height={500} width={1240} bind:shapes bind:activeAction bind:text>
 	{#each shapes as shape}
 		{#if shape.name === 'Rectangle'}
 			<Rectangle x={shape.x} y={shape.y} height={shape.height} width={shape.width} />
@@ -72,8 +72,11 @@
 			/>
 		{:else if shape.name === 'StraightLine'}
 			<StraightLine x={shape.x} y={shape.y} x1={shape.x1} y1={shape.y1} />
+		{:else if shape.name === 'Text'}
+			<Text x={shape.x} y={shape.y} text={shape.text} />
 		{/if}
 	{/each}
+	<Text x={40} y={40} text={'dsadas'} />
 </Canvas>
 {#if activeAction === 'Move'}
 	<p class="text-white text-center mt-4">

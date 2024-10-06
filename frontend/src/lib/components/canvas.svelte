@@ -6,6 +6,7 @@
 
 	import { SaveCanvasImg } from '$lib/wailsjs/go/main/App';
 
+	export let text;
 	export let width = 0;
 	export let height = 0;
 	export let shapes: Shape[];
@@ -57,7 +58,8 @@
 					radius2: 0,
 					rotation: 0,
 					x1: 0,
-					y1: 0
+					y1: 0,
+					text: ''
 				}
 			];
 		} else {
@@ -86,7 +88,8 @@
 					radius2: 0,
 					rotation: 0,
 					x1: cursorPosition.x,
-					y1: cursorPosition.y
+					y1: cursorPosition.y,
+					text: ''
 				}
 			];
 			return;
@@ -236,6 +239,29 @@
 	{height}
 	on:pointermove={handleMove}
 	on:mousedown={() => {
+    if (activeAction === 'Text') {
+			shapes = [
+				...shapes,
+				{
+					name: 'Text',
+					x: cursorPosition.x,
+					y: cursorPosition.y,
+					height: 0,
+					width: 0,
+					base: 0,
+					radius1: 0,
+					radius2: 0,
+					rotation: 0,
+					x1: 0,
+					y1: 0,
+					text: text
+				}
+			];
+			shapes = [...shapes]
+      console.log('dupa');
+      return;
+    }
+
 		if (activeAction === 'Save') {
 			const dataURI = canvas.toDataURL('image/jpeg');
 			SaveCanvasImg(dataURI);
@@ -256,15 +282,14 @@
 			return;
 		}
 
-		if (
-			shapes.length === 0 ||
-			['Triangle', 'Rectangle', 'Ellipse', 'StraightLine'].includes(shapes[shapes.length - 1].name)
-		) {
-			isDrawing = true;
-			drawing();
-		}
+    isDrawing = true;
+    drawing();
 	}}
 	on:mouseup={() => {
+    if (activeAction === 'Text') {
+      console.log('dupa');
+      return;
+    }
 		console.log('Mouse released');
 		if (activeAction === 'Move' || activeAction === 'Resize') {
 			isLive = false;
