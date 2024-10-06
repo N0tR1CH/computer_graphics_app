@@ -1,20 +1,19 @@
 <script lang="ts">
 	import { getContext, onMount } from 'svelte';
-	import type { DrawFunction } from '../../../types/draw_function.ts';
+	import type { DrawFunction } from '../../../types/draw_function';
 
-	export let height: number;
-	export let width: number;
 	export let x: number;
 	export let y: number;
+	export let base: number;
+	export let height: number;
 
 	type CanvasContext = {
 		registerDrawFunction: (fn: DrawFunction) => () => void;
 		redrawCanvas: () => void;
 	};
-
 	const { registerDrawFunction, redrawCanvas } = getContext<CanvasContext>('canvas');
 
-	$: if ((height, width, x, y)) {
+	$: if ((x, y, base, height)) {
 		redrawCanvas();
 	}
 
@@ -25,11 +24,13 @@
 			redrawCanvas();
 		};
 	});
-
 	function draw(ctx: CanvasRenderingContext2D | null) {
 		if (ctx) {
 			ctx.beginPath();
-			ctx.rect(x, y, width, height);
+			ctx.moveTo(x - base / 2, y + height / 2);
+			ctx.lineTo(x, y - height / 2);
+			ctx.lineTo(x + base / 2, y + height / 2);
+			ctx.closePath();
 			ctx.fill();
 		}
 	}

@@ -1,23 +1,22 @@
 <script lang="ts">
 	import { getContext, onMount } from 'svelte';
-	import type { DrawFunction } from '../../../types/draw_function.ts';
+	import type { DrawFunction } from '../../../types/draw_function';
 
-	export let height: number;
-	export let width: number;
+	export let radius1: number;
+	export let radius2: number;
 	export let x: number;
 	export let y: number;
+	export let rotation: number = 0;
 
 	type CanvasContext = {
 		registerDrawFunction: (fn: DrawFunction) => () => void;
 		redrawCanvas: () => void;
 	};
-
 	const { registerDrawFunction, redrawCanvas } = getContext<CanvasContext>('canvas');
 
-	$: if ((height, width, x, y)) {
+	$: if ((radius1, radius2, rotation, x, y)) {
 		redrawCanvas();
 	}
-
 	onMount(() => {
 		const unregister = registerDrawFunction(draw);
 		return () => {
@@ -25,11 +24,10 @@
 			redrawCanvas();
 		};
 	});
-
 	function draw(ctx: CanvasRenderingContext2D | null) {
 		if (ctx) {
 			ctx.beginPath();
-			ctx.rect(x, y, width, height);
+			ctx.ellipse(x, y, radius1, radius2, (rotation * Math.PI) / 180, 0, 2 * Math.PI);
 			ctx.fill();
 		}
 	}

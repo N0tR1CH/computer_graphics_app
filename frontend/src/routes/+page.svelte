@@ -13,17 +13,13 @@
 	import TextOutline from '$lib/components/outlines/text_outline.svelte';
 	import Canvas from '$lib/components/canvas.svelte';
 	import Rectangle from '$lib/components/shapes/rectangle.svelte';
+	import Triangle from '$lib/components/shapes/triangle.svelte';
+	import Ellipse from '$lib/components/shapes/ellipse.svelte';
+	import type { Shape } from '../types/shape';
 	import type { PossibleActions } from '../types/possible_actions';
 
 	let activeAction: PossibleActions = 'Triangle';
 
-	type Shape = {
-		name: string;
-		x: number;
-		y: number;
-		height: number;
-		width: number;
-	};
 	let shapes: Shape[] = [];
 </script>
 
@@ -57,10 +53,20 @@
 		<TextOutline {activeAction} />
 	</ToolBarButton>
 </ToolBar>
-<Canvas height={500} bind:shapes>
+<Canvas height={500} bind:shapes bind:activeAction>
 	{#each shapes as shape}
 		{#if shape.name === 'Rectangle'}
-			<Rectangle fill="green" x={shape.x} y={shape.y} height={shape.height} width={shape.width} />
+			<Rectangle x={shape.x} y={shape.y} height={shape.height} width={shape.width} />
+		{:else if shape.name === 'Triangle'}
+			<Triangle x={shape.x} y={shape.y} base={shape.base} height={shape.height} />
+		{:else if shape.name === 'Ellipse'}
+			<Ellipse
+				x={shape.x}
+				y={shape.y}
+				radius1={shape.radius1}
+				radius2={shape.radius2}
+				rotation={shape.rotation}
+			/>
 		{/if}
 	{/each}
 </Canvas>
