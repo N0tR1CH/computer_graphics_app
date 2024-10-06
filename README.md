@@ -1,16 +1,34 @@
-# README
+##  Ćwiczenie 1 — Podstawy aplikacji graficznych
 
-## About
+W dowolnym języku programowania zaimplementować w aplikacji graficznej:
 
-This is the official Wails Svelte template.
+1. Tworzenie, przesuwanie i skalowanie trójkątów, czworokątów, elips (należy zaimplementować przesuwanie i skalowanie obecnie rysowanej figury, jak w Paint)
+2. Rysowanie prostych linii
+3. Rysowanie odręczne
+4. Zapisywanie powstałego obrazu
+5. Pisanie tekstu na canvas (funkcjonalność jak w Paint)
 
-## Live Development
+**Architektura: zadanie należy stworzyć w oparciu o architekturę MVVM, MVC, MVP lub MVPVM. Decyzja którą użyć jest zależna od państwa umiejętności, użytej biblioteki i języka.**
 
-To run in live development mode, run `wails dev` in the project directory. This will run a Vite development
-server that will provide very fast hot reload of your frontend changes. If you want to develop in a browser
-and have access to your Go methods, there is also a dev server that runs on http://localhost:34115. Connect
-to this in your browser, and you can call your Go code from devtools.
+**W przypadku aplikacji desktopowych na WPF zalecane jest MVVM. Polecam MVPVM do zaawansowanych aplikacji. Do Windows Forms zalecany jest MVP.** **W przypadku aplikacji webowych zalecana jest MVC.**
 
-## Building
+Na 5 wystarczy poprawnie zaimplementować 4 podpunkty z 5 oraz użyć odpowiedniej architektury. Jeśli piszecie Państwo w parach należy zaimplementować wszystkie podpunkty.
 
-To build a redistributable, production mode package, use `wails build`.
+### Rozwiązanie
+### Taskbar
+Narzędzia taskbara (znajdującego się na górnej stronie ekranu) zawierają:
+- Figura trójkąta (do tworzenia trójkątów)
+- Figura czworokąta (do tworzenia czworokątów)
+- Figura elipsy (do tworzenia elips)
+- Symbol przesuwania (4 strzałki kierunkowe)
+- Symbol skalowania (strzałka z dwoma końcami)
+- Symbol prostej linii (rysowanie prostych linii)
+- Symbol ołówka (rysowanie odręczne)
+- Symbol dyskietki do zapisu
+- Symbol tekstu np. Aa (pisanie tekstu na canvasie)
+## Progres
+**Ad. 1**: 
+- [ ] Tworzenie, przesuwanie i skalowanie trójkątów, czworokątów, elips (należy zaimplementować przesuwanie i skalowanie obecnie rysowanej figury, jak w Paint
+	- [x] Tworzenie trójkątów, czworokątów i elips
+	- [x] Przesuwanie figur
+	- [ ] Skalowanie figur
