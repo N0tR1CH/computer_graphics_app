@@ -223,6 +223,8 @@
 	}
 
 	onMount(() => {
+		canvas.style.width = '100%';
+		canvas.width = canvas.offsetWidth;
 		ctx = canvas.getContext('2d');
 		if (ctx) {
 			draw();
@@ -239,7 +241,7 @@
 	{height}
 	on:pointermove={handleMove}
 	on:mousedown={() => {
-    if (activeAction === 'Text') {
+		if (activeAction === 'Text') {
 			shapes = [
 				...shapes,
 				{
@@ -257,10 +259,10 @@
 					text: text
 				}
 			];
-			shapes = [...shapes]
-      console.log('dupa');
-      return;
-    }
+			shapes = [...shapes];
+			console.log('dupa');
+			return;
+		}
 
 		if (activeAction === 'Save') {
 			const dataURI = canvas.toDataURL('image/jpeg');
@@ -282,14 +284,14 @@
 			return;
 		}
 
-    isDrawing = true;
-    drawing();
+		isDrawing = true;
+		drawing();
 	}}
 	on:mouseup={() => {
-    if (activeAction === 'Text') {
-      console.log('dupa');
-      return;
-    }
+		if (activeAction === 'Text') {
+			console.log('dupa');
+			return;
+		}
 		console.log('Mouse released');
 		if (activeAction === 'Move' || activeAction === 'Resize') {
 			isLive = false;
