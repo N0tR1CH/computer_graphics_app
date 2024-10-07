@@ -260,7 +260,6 @@
 				}
 			];
 			shapes = [...shapes];
-			console.log('dupa');
 			return;
 		}
 
@@ -289,7 +288,6 @@
 	}}
 	on:mouseup={() => {
 		if (activeAction === 'Text') {
-			console.log('dupa');
 			return;
 		}
 		console.log('Mouse released');
