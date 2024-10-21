@@ -5,6 +5,7 @@
 	export let x: number;
 	export let y: number;
 	export let text: string;
+	export let hexColor: string;
 
 	type CanvasContext = {
 		registerDrawFunction: (fn: DrawFunction) => () => void;
@@ -25,6 +26,7 @@
 	});
 	function draw(ctx: CanvasRenderingContext2D | null) {
 		if (ctx) {
+			ctx.fillStyle = hexColor;
 			ctx.fillText(text, x, y);
 		}
 	}

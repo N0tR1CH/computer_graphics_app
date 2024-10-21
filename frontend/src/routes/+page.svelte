@@ -61,9 +61,21 @@
 <Canvas height={500} width={1240} bind:shapes bind:activeAction bind:text>
 	{#each shapes as shape}
 		{#if shape.name === 'Rectangle'}
-			<Rectangle x={shape.x} y={shape.y} height={shape.height} width={shape.width} />
+			<Rectangle
+				x={shape.x}
+				y={shape.y}
+				height={shape.height}
+				width={shape.width}
+				hexColor={shape.hexColor}
+			/>
 		{:else if shape.name === 'Triangle'}
-			<Triangle x={shape.x} y={shape.y} base={shape.base} height={shape.height} />
+			<Triangle
+				x={shape.x}
+				y={shape.y}
+				base={shape.base}
+				height={shape.height}
+				hexColor={shape.hexColor}
+			/>
 		{:else if shape.name === 'Ellipse'}
 			<Ellipse
 				x={shape.x}
@@ -71,11 +83,12 @@
 				radius1={shape.radius1}
 				radius2={shape.radius2}
 				rotation={shape.rotation}
+				hexColor={shape.hexColor}
 			/>
 		{:else if shape.name === 'StraightLine'}
-			<StraightLine x={shape.x} y={shape.y} x1={shape.x1} y1={shape.y1} />
+			<StraightLine x={shape.x} y={shape.y} x1={shape.x1} y1={shape.y1} hexColor={shape.hexColor} />
 		{:else if shape.name === 'Text'}
-			<Text x={shape.x} y={shape.y} text={shape.text} />
+			<Text x={shape.x} y={shape.y} text={shape.text} hexColor={shape.hexColor} />
 		{/if}
 	{/each}
 </Canvas>

@@ -6,6 +6,7 @@
 	export let width: number;
 	export let x: number;
 	export let y: number;
+	export let hexColor: string;
 
 	type CanvasContext = {
 		registerDrawFunction: (fn: DrawFunction) => () => void;
@@ -30,6 +31,7 @@
 		if (ctx) {
 			ctx.beginPath();
 			ctx.rect(x, y, width, height);
+			ctx.fillStyle = hexColor;
 			ctx.fill();
 		}
 	}

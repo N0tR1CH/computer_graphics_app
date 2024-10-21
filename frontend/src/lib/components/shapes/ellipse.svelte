@@ -7,6 +7,7 @@
 	export let x: number;
 	export let y: number;
 	export let rotation: number = 0;
+	export let hexColor: string;
 
 	type CanvasContext = {
 		registerDrawFunction: (fn: DrawFunction) => () => void;
@@ -28,6 +29,7 @@
 		if (ctx) {
 			ctx.beginPath();
 			ctx.ellipse(x, y, radius1, radius2, (rotation * Math.PI) / 180, 0, 2 * Math.PI);
+			ctx.fillStyle = hexColor;
 			ctx.fill();
 		}
 	}

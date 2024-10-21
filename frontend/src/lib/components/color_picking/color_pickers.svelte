@@ -2,11 +2,11 @@
 	import iro from '@jaames/iro';
 	import { onMount } from 'svelte';
 	import { RgbToCmyk, CmykToRgb } from '$lib/wailsjs/go/main/App';
+	import { currentColor } from '$lib/stores/stores';
 
 	let settingRgb: boolean = false;
 	let settingCmyk: boolean = false;
 	let colorPicker: iro.ColorPicker;
-	let hexColor: string;
 	let r: number = 0;
 	let g: number = 0;
 	let b: number = 0;
@@ -121,7 +121,7 @@
 			]
 		});
 
-		hexColor = colorPicker.color.hexString;
+		$currentColor = colorPicker.color.hexString;
 		r = colorPicker.color.red;
 		g = colorPicker.color.green;
 		b = colorPicker.color.blue;
@@ -131,7 +131,7 @@
 		setCmyk();
 
 		colorPicker.on('color:change', () => {
-			hexColor = colorPicker.color.hexString;
+			$currentColor = colorPicker.color.hexString;
 			r = colorPicker.color.red;
 			g = colorPicker.color.green;
 			b = colorPicker.color.blue;
@@ -204,6 +204,6 @@
 
 <h2 class="text-center text-4xl text-white font-bold mt-2">Color Preview</h2>
 <div
-	style="background-color: {hexColor}"
+	style="background-color: {$currentColor}"
 	class="h-12 my-2 rounded-full border-white border-solid border-2"
 ></div>

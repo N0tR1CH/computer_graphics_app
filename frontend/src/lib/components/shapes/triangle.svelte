@@ -6,6 +6,7 @@
 	export let y: number;
 	export let base: number;
 	export let height: number;
+	export let hexColor: string;
 
 	type CanvasContext = {
 		registerDrawFunction: (fn: DrawFunction) => () => void;
@@ -31,6 +32,7 @@
 			ctx.lineTo(x, y - height / 2);
 			ctx.lineTo(x + base / 2, y + height / 2);
 			ctx.closePath();
+			ctx.fillStyle = hexColor;
 			ctx.fill();
 		}
 	}

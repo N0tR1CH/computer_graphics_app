@@ -2,6 +2,7 @@
 	import type { DrawFunction } from '../../types/draw_function';
 	import type { PossibleActions } from '../../types/possible_actions';
 	import type { Shape } from '../../types/shape';
+	import { currentColor } from '$lib/stores/stores';
 
 	import { setContext, onMount } from 'svelte';
 	import { SaveCanvasImg } from '$lib/wailsjs/go/main/App';
@@ -60,7 +61,8 @@
 					rotation: 0,
 					x1: 0,
 					y1: 0,
-					text: ''
+					text: '',
+					hexColor: $currentColor
 				}
 			];
 		} else {
@@ -90,7 +92,8 @@
 					rotation: 0,
 					x1: cursorPosition.x,
 					y1: cursorPosition.y,
-					text: ''
+					text: '',
+					hexColor: $currentColor
 				}
 			];
 			return;
@@ -257,7 +260,8 @@
 					rotation: 0,
 					x1: 0,
 					y1: 0,
-					text: text
+					text: text,
+					hexColor: $currentColor
 				}
 			];
 			shapes = [...shapes];

@@ -25,4 +25,5 @@ export type Shape = {
   *   - text
   */
   text: string;
+  hexColor: string;
 };
