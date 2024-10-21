@@ -25,7 +25,9 @@
 	let shapes: Shape[] = [];
 </script>
 
-<TopBar title={'Stuff ;)'} />
+<TopBar>
+	<p slot="title">Stuff ;)</p>
+</TopBar>
 <ToolBar>
 	<ToolBarButton bind:activeAction action={'Triangle'}>
 		<TriangleOutline {activeAction} />
