@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"encoding/base64"
-	"fmt"
+	"image/color"
 	"os"
 	"strings"
 
@@ -15,6 +15,19 @@ type App struct {
 	ctx context.Context
 }
 
+type Cmyk struct {
+	C uint8 `json:"c"`
+	M uint8 `json:"m"`
+	Y uint8 `json:"y"`
+	K uint8 `json:"k"`
+}
+
+type Rgb struct {
+	R uint8 `json:"r"`
+	G uint8 `json:"g"`
+	B uint8 `json:"b"`
+}
+
 // NewApp creates a new App application struct
 func NewApp() *App {
 	return &App{}
@@ -24,11 +37,6 @@ func NewApp() *App {
 // so we can call the runtime methods
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
-}
-
-// Greet returns a greeting for the given name
-func (a *App) Greet(name string) string {
-	return fmt.Sprintf("Hello %s, It's show time!", name)
 }
 
 func (a *App) SaveCanvasImg(image string) {
@@ -83,4 +91,14 @@ func (a *App) SaveCanvasImg(image string) {
 			DefaultButton: "Ok",
 		})
 	}
+}
+
+func (a *App) RgbToCmyk(r, g, b uint8) Cmyk {
+	c, m, y, k := color.RGBToCMYK(r, g, b)
+	return Cmyk{c, m, y, k}
+}
+
+func (a *App) CmykToRgb(c, m, y, k uint8) Rgb {
+	r, g, b := color.CMYKToRGB(c, m, y, k)
+	return Rgb{r, g, b}
 }

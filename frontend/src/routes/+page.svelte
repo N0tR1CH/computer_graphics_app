@@ -19,6 +19,7 @@
 	import Text from '$lib/components/shapes/text.svelte';
 	import type { Shape } from '../types/shape';
 	import type { PossibleActions } from '../types/possible_actions';
+	import ColorPickers from '$lib/components/color_picking/color_pickers.svelte';
 
 	let activeAction: PossibleActions = 'Triangle';
 	let text: string = '';
@@ -102,6 +103,7 @@
 		type="text"
 	/>
 {/if}
+<ColorPickers></ColorPickers>
 
 <style lang="postcss">
 	:global(html) {
