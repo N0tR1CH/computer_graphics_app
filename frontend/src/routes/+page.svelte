@@ -22,7 +22,6 @@
 
 	let activeAction: PossibleActions = 'Triangle';
 	let text: string = '';
-
 	let shapes: Shape[] = [];
 </script>
 
@@ -78,25 +77,25 @@
 	{/each}
 </Canvas>
 {#if activeAction === 'Move'}
-	<p class="text-white text-center mt-4">
+	<p class="mt-4 text-center text-white">
 		Current mode is moving elements. Press left click in order to move latest element somewhere else
 		on the canvas.
 	</p>
 {:else if activeAction === 'Resize'}
-	<p class="text-white text-center mt-4">
+	<p class="mt-4 text-center text-white">
 		Current mode is resizing elements. Press left click in order to scale latest element. If it
 		doesn't do anything that means element is not scalable!
 	</p>
 {:else if activeAction === 'Save'}
-	<p class="text-white text-center mt-4">
+	<p class="mt-4 text-center text-white">
 		Current mode is saving canvas. Click on the canvas in order to invoke action!
 	</p>
 {:else if activeAction === 'Text'}
-	<p class="text-white text-center mt-4">
+	<p class="mt-4 text-center text-white">
 		Write text to input field and click on the canvas in order to add it to correct coordinates.
 	</p>
 	<input
-		class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+		class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
 		bind:value={text}
 		type="text"
 	/>

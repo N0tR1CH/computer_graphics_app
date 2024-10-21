@@ -2,7 +2,7 @@
 </script>
 
 <ul
-	class="h-16 bg-white my-4 rounded-xl shadow-xl py-2 px-8 flex justify-between items-center cursor-default bg-opacity-30"
+	class="my-4 flex h-16 cursor-default items-center justify-between rounded-xl bg-white bg-opacity-30 px-8 py-2 shadow-xl"
 >
 	<slot></slot>
 </ul>

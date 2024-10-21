@@ -234,7 +234,7 @@
 </script>
 
 <canvas
-	class="rounded-xl shadow-xl bg-white"
+	class="rounded-xl bg-white shadow-xl"
 	class:w-full={width === 0}
 	bind:this={canvas}
 	{width}
