@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { setContext, onMount } from 'svelte';
 	import type { DrawFunction } from '../../types/draw_function';
 	import type { PossibleActions } from '../../types/possible_actions';
 	import type { Shape } from '../../types/shape';
 
+	import { setContext, onMount } from 'svelte';
 	import { SaveCanvasImg } from '$lib/wailsjs/go/main/App';
 
 	export let text;
@@ -11,6 +11,7 @@
 	export let height = 0;
 	export let shapes: Shape[];
 	export let activeAction: PossibleActions;
+
 	let canvas: HTMLCanvasElement;
 	let ctx: CanvasRenderingContext2D | null;
 	let scheduled = false;
