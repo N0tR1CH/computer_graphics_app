@@ -95,7 +95,12 @@ func (a *App) SaveCanvasImg(image string) {
 
 func (a *App) RgbToCmyk(r, g, b uint8) Cmyk {
 	c, m, y, k := color.RGBToCMYK(r, g, b)
-	return Cmyk{c, m, y, k}
+	return Cmyk{
+		C: c,
+		M: m,
+		Y: y,
+		K: k,
+	}
 }
 
 func (a *App) CmykToRgb(c, m, y, k uint8) Rgb {

@@ -3,6 +3,8 @@
 	import { onMount } from 'svelte';
 	import { RgbToCmyk, CmykToRgb } from '$lib/wailsjs/go/main/App';
 
+	let settingRgb: boolean = false;
+	let settingCmyk: boolean = false;
 	let colorPicker: iro.ColorPicker;
 	let hexColor: string;
 	let r: number = 0;
@@ -17,7 +19,13 @@
 	let k: number = 0;
 
 	async function setCmyk() {
+		if (settingCmyk) {
+			return;
+		}
+
+		settingCmyk = true;
 		const cmyk = await RgbToCmyk(r, g, b);
+		settingCmyk = false;
 		c = cmyk.c;
 		m = cmyk.m;
 		y = cmyk.y;
@@ -25,7 +33,13 @@
 	}
 
 	async function setRgb() {
+		if (settingRgb) {
+			return;
+		}
+
+		settingRgb = true;
 		const rgb = await CmykToRgb(c, m, y, k);
+		settingRgb = false;
 		colorPicker.color.red = rgb.r;
 		colorPicker.color.green = rgb.g;
 		colorPicker.color.blue = rgb.b;
@@ -55,8 +69,8 @@
 		colorPicker.color.value = v;
 	}
 
-	$: if (c) {
-		// setRgb();
+	$: if (c || m || y || k) {
+		setRgb();
 	}
 
 	onMount(() => {
@@ -174,15 +188,15 @@
 			<input type="number" min="0" max="255" class="rounded-full text-black px-2" bind:value={c} />
 		</li>
 		<li>
-			<span class="text-white font-bold">M</span>
+			<span class="text-white font-b255">M</span>
 			<input type="number" min="0" max="255" class="rounded-full text-black px-2" bind:value={m} />
 		</li>
 		<li>
-			<span class="text-white font-bold">Y</span>
+			<span class="text-white font-b255">Y</span>
 			<input type="number" min="0" max="255" class="rounded-full text-black px-2" bind:value={y} />
 		</li>
 		<li>
-			<span class="text-white font-bold">K</span>
+			<span class="text-white font-b255">K</span>
 			<input type="number" min="0" max="255" class="rounded-full text-black px-2" bind:value={k} />
 		</li>
 	</ul>
