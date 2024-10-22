@@ -26,6 +26,8 @@
 	let activeAction: PossibleActions = 'Triangle';
 	let text: string = '';
 	let shapes: Shape[] = [];
+	let sceneWidth: number = 350;
+	let sceneHeight: number = 350;
 </script>
 
 <TopBar>
@@ -121,7 +123,23 @@
 	/>
 {/if}
 <ColorPickers></ColorPickers>
-<ThirdDimensionCanvas bind:shapes></ThirdDimensionCanvas>
+{#key sceneWidth + sceneHeight}
+	<ThirdDimensionCanvas bind:shapes width={sceneWidth} height={sceneHeight}></ThirdDimensionCanvas>
+{/key}
+<div class="flex justify-center gap-x-4 mb-4">
+	<label for="" class="text-white font-bold">
+		Width of the scene
+		<input type="number" bind:value={sceneWidth} class="rounded-xl p-2 text-black" />
+	</label>
+	<label for="" class="text-white font-bold">
+		Height of the scene
+		<input type="number" bind:value={sceneHeight} class="rounded-xl p-2 text-black" />
+	</label>
+</div>
+<p class="text-center text-white mb-4 font-bold">
+	Cube is being added to fixed position but you can change it by using move tool although it is
+	clunky (3d to 2d ehh)
+</p>
 
 <style lang="postcss">
 	:global(html) {

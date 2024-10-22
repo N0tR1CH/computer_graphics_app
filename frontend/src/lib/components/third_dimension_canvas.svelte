@@ -5,8 +5,11 @@
 	import { currentColor } from '$lib/stores/stores';
 
 	export let shapes;
+	export let width: number = 350;
+	export let height: number = 350;
 	let canvasContainer: HTMLElement;
 	let renderer: THREE.WebGLRenderer;
+	let controls: OrbitControls;
 
 	const DownloadCanvasAsImage = () => {
 		const baseUrlImage = renderer.domElement.toDataURL('image/png');
@@ -34,13 +37,21 @@
 	onMount(() => {
 		// Huge credits: https://codepen.io/aexklon/pen/mdGmmxJ
 		// Width and Height of the threejs canvas
-		const [w, h] = [350, 350];
+		const [w, h] = [width, height];
 		// WebGL Rendering Engine
 		renderer = new THREE.WebGLRenderer({
 			alpha: true,
 			antialias: true,
 			preserveDrawingBuffer: true
 		});
+
+		renderer.domElement.classList.add(
+			'border-solid',
+			'border-2',
+			'border-white',
+			'rounded-xl',
+			'm-4'
+		);
 
 		renderer.setSize(w, h);
 		renderer.shadowMap.enabled = true;
@@ -56,7 +67,7 @@
 		camera.position.set(0, 0, 3);
 
 		// Controls
-		const controls = new OrbitControls(camera, renderer.domElement);
+		controls = new OrbitControls(camera, renderer.domElement);
 
 		// create the mesh from geometry and material
 		const geometry = new THREE.BoxGeometry(1, 1, 1);
@@ -111,7 +122,10 @@
 	});
 </script>
 
-<div class="flex justify-center items-center" bind:this={canvasContainer}>
+<div
+	class="flex justify-center items-center border-solid border-white border-2 rounded-xl mb-2"
+	bind:this={canvasContainer}
+>
 	<button
 		type="button"
 		class="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
@@ -120,8 +134,3 @@
 		}}>Add to canvas</button
 	>
 </div>
-
-<p class="text-center text-white mb-4 font-bold">
-	Cube is being added to fixed position but you can change it by using move tool although it is
-	clunky (3d to 2d ehh)
-</p>
