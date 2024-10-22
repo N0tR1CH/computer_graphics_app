@@ -119,3 +119,8 @@
 		}}>Add to canvas</button
 	>
 </div>
+
+<p class="text-center text-white mb-4 font-bold">
+	Cube is being added to fixed position but you can change it by using move tool although it is
+	clunky (3d to 2d ehh)
+</p>
