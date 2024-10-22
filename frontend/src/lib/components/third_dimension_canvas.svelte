@@ -32,6 +32,7 @@
 	};
 
 	onMount(() => {
+		// Huge credits: https://codepen.io/aexklon/pen/mdGmmxJ
 		// Width and Height of the threejs canvas
 		const [w, h] = [350, 350];
 		// WebGL Rendering Engine
