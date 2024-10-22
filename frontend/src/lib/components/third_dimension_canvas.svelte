@@ -4,23 +4,17 @@
 	import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 	let canvasContainer: HTMLElement;
+	let renderer: THREE.WebGLRenderer;
 
 	const DownloadCanvasAsImage = () => {
-		let downloadLink = document.createElement('a');
-		downloadLink.setAttribute('download', 'CanvasAsImage.png');
-		let canvas = canvasContainer.querySelector('canvas');
-		canvas.toBlob((blob) => {
-			let url = URL.createObjectURL(blob);
-			downloadLink.setAttribute('href', url);
-			downloadLink.click();
-		});
+		console.log(renderer.domElement.toDataURL('image/png'));
 	};
 
 	onMount(() => {
 		// Width and Height of the threejs canvas
 		const [w, h] = [350, 350];
 		// WebGL Rendering Engine
-		const renderer = new THREE.WebGLRenderer({
+		renderer = new THREE.WebGLRenderer({
 			alpha: true,
 			antialias: true,
 			preserveDrawingBuffer: true
