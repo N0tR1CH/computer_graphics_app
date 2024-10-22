@@ -27,7 +27,7 @@
 </script>
 
 <TopBar>
-	<p slot="title">Stuff ;)</p>
+	<p class="text-2xl" slot="title">Stuff ;)</p>
 </TopBar>
 <ToolBar>
 	<ToolBarButton bind:activeAction action={'Triangle'}>
