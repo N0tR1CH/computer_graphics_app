@@ -26,4 +26,5 @@ export type Shape = {
   */
   text: string;
   hexColor: string;
+  baseUrlImage: string;
 };

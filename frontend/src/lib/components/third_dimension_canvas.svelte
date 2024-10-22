@@ -2,12 +2,33 @@
 	import { onMount } from 'svelte';
 	import * as THREE from 'three';
 	import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+	import { currentColor } from '$lib/stores/stores';
 
+	export let shapes;
 	let canvasContainer: HTMLElement;
 	let renderer: THREE.WebGLRenderer;
 
 	const DownloadCanvasAsImage = () => {
-		console.log(renderer.domElement.toDataURL('image/png'));
+		const baseUrlImage = renderer.domElement.toDataURL('image/png');
+		shapes = [
+			...shapes,
+			{
+				name: 'Image',
+				x: 100,
+				y: 100,
+				height: 0,
+				width: 0,
+				base: 0,
+				radius1: 0,
+				radius2: 0,
+				rotation: 0,
+				x1: 0,
+				y1: 0,
+				text: '',
+				hexColor: $currentColor,
+				baseUrlImage: baseUrlImage
+			}
+		];
 	};
 
 	onMount(() => {

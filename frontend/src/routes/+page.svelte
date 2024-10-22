@@ -21,6 +21,7 @@
 	import type { PossibleActions } from '../types/possible_actions';
 	import ColorPickers from '$lib/components/color_picking/color_pickers.svelte';
 	import ThirdDimensionCanvas from '$lib/components/third_dimension_canvas.svelte';
+	import Image from '$lib/components/shapes/image.svelte';
 
 	let activeAction: PossibleActions = 'Triangle';
 	let text: string = '';
@@ -90,6 +91,8 @@
 			<StraightLine x={shape.x} y={shape.y} x1={shape.x1} y1={shape.y1} hexColor={shape.hexColor} />
 		{:else if shape.name === 'Text'}
 			<Text x={shape.x} y={shape.y} text={shape.text} hexColor={shape.hexColor} />
+		{:else if shape.name === 'Image'}
+			<Image x={shape.x} y={shape.y} baseUrlImage={shape.baseUrlImage} />
 		{/if}
 	{/each}
 </Canvas>
@@ -118,7 +121,7 @@
 	/>
 {/if}
 <ColorPickers></ColorPickers>
-<ThirdDimensionCanvas></ThirdDimensionCanvas>
+<ThirdDimensionCanvas bind:shapes></ThirdDimensionCanvas>
 
 <style lang="postcss">
 	:global(html) {

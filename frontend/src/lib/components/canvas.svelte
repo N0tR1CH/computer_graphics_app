@@ -62,7 +62,8 @@
 					x1: 0,
 					y1: 0,
 					text: '',
-					hexColor: $currentColor
+					hexColor: $currentColor,
+					baseUrlImage: ''
 				}
 			];
 		} else {
@@ -261,7 +262,8 @@
 					x1: 0,
 					y1: 0,
 					text: text,
-					hexColor: $currentColor
+					hexColor: $currentColor,
+					baseUrlImage: ''
 				}
 			];
 			shapes = [...shapes];
