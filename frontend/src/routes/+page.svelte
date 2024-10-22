@@ -20,6 +20,7 @@
 	import type { Shape } from '../types/shape';
 	import type { PossibleActions } from '../types/possible_actions';
 	import ColorPickers from '$lib/components/color_picking/color_pickers.svelte';
+	import ThirdDimensionCanvas from '$lib/components/third_dimension_canvas.svelte';
 
 	let activeAction: PossibleActions = 'Triangle';
 	let text: string = '';
@@ -117,6 +118,7 @@
 	/>
 {/if}
 <ColorPickers></ColorPickers>
+<ThirdDimensionCanvas></ThirdDimensionCanvas>
 
 <style lang="postcss">
 	:global(html) {
