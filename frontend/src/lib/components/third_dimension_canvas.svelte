@@ -5,11 +5,26 @@
 
 	let canvasContainer: HTMLElement;
 
+	const DownloadCanvasAsImage = () => {
+		let downloadLink = document.createElement('a');
+		downloadLink.setAttribute('download', 'CanvasAsImage.png');
+		let canvas = canvasContainer.querySelector('canvas');
+		canvas.toBlob((blob) => {
+			let url = URL.createObjectURL(blob);
+			downloadLink.setAttribute('href', url);
+			downloadLink.click();
+		});
+	};
+
 	onMount(() => {
 		// Width and Height of the threejs canvas
 		const [w, h] = [350, 350];
 		// WebGL Rendering Engine
-		const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+		const renderer = new THREE.WebGLRenderer({
+			alpha: true,
+			antialias: true,
+			preserveDrawingBuffer: true
+		});
 
 		renderer.setSize(w, h);
 		renderer.shadowMap.enabled = true;
@@ -84,6 +99,8 @@
 	<button
 		type="button"
 		class="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-		>Add to canvas</button
+		on:click={() => {
+			DownloadCanvasAsImage();
+		}}>Add to canvas</button
 	>
 </div>
