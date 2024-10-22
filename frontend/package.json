@@ -38,6 +38,8 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@jaames/iro": "^5.5.2"
+		"@jaames/iro": "^5.5.2",
+		"@types/three": "^0.169.0",
+		"three": "^0.169.0"
 	}
 }
