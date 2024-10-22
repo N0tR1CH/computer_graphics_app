@@ -147,63 +147,63 @@
 	});
 </script>
 
-<h2 class="text-center text-4xl text-white font-bold mt-2">RGB/HSV</h2>
-<div class="flex gap-x-4 justify-around mt-4">
+<h2 class="mt-2 text-center text-4xl font-bold text-white">RGB/HSV</h2>
+<div class="mt-4 flex justify-around gap-x-4">
 	<div id="picker"></div>
 	<ul>
-		<li class="text-white mb-4 font-bold">
-			<input type="number" min="0" max="255" class="rounded-full text-black px-2" bind:value={r} />
+		<li class="mb-4 font-bold text-white">
+			<input type="number" min="0" max="255" class="rounded-full px-2 text-black" bind:value={r} />
 		</li>
-		<li class="text-white mb-4 font-bold">
-			<input type="number" min="0" max="255" class="rounded-full text-black px-2" bind:value={g} />
+		<li class="mb-4 font-bold text-white">
+			<input type="number" min="0" max="255" class="rounded-full px-2 text-black" bind:value={g} />
 		</li>
-		<li class="text-white mb-4 font-bold">
-			<input type="number" min="0" max="255" class="rounded-full text-black px-2" bind:value={b} />
+		<li class="mb-4 font-bold text-white">
+			<input type="number" min="0" max="255" class="rounded-full px-2 text-black" bind:value={b} />
 		</li>
-		<li class="text-white mb-4 font-bold">
-			<input type="number" min="0" max="360" class="rounded-full text-black px-2" bind:value={h} />
+		<li class="mb-4 font-bold text-white">
+			<input type="number" min="0" max="360" class="rounded-full px-2 text-black" bind:value={h} />
 		</li>
-		<li class="text-white mb-4 font-bold">
-			<input type="number" min="0" max="100" class="rounded-full text-black px-2" bind:value={s} />
+		<li class="mb-4 font-bold text-white">
+			<input type="number" min="0" max="100" class="rounded-full px-2 text-black" bind:value={s} />
 		</li>
-		<li class="text-white mb-4 font-bold">
-			<input type="number" min="0" max="100" class="rounded-full text-black px-2" bind:value={v} />
+		<li class="mb-4 font-bold text-white">
+			<input type="number" min="0" max="100" class="rounded-full px-2 text-black" bind:value={v} />
 		</li>
 	</ul>
 	<ul>
-		<li class="text-white mb-4 font-bold">RED</li>
-		<li class="text-white mb-4 font-bold">GREEN</li>
-		<li class="text-white mb-4 font-bold">BLUE</li>
-		<li class="text-white mb-4 font-bold">HUE</li>
-		<li class="text-white mb-4 font-bold">SATURATION</li>
-		<li class="text-white mb-4 font-bold">VALUE</li>
+		<li class="mb-4 font-bold text-white">RED</li>
+		<li class="mb-4 font-bold text-white">GREEN</li>
+		<li class="mb-4 font-bold text-white">BLUE</li>
+		<li class="mb-4 font-bold text-white">HUE</li>
+		<li class="mb-4 font-bold text-white">SATURATION</li>
+		<li class="mb-4 font-bold text-white">VALUE</li>
 	</ul>
 </div>
 
 <div>
-	<h2 class="text-center text-4xl text-white font-bold">CMYK</h2>
+	<h2 class="text-center text-4xl font-bold text-white">CMYK</h2>
 	<ul class="flex justify-around">
 		<li>
-			<span class="text-white font-bold">C</span>
-			<input type="number" min="0" max="255" class="rounded-full text-black px-2" bind:value={c} />
+			<span class="font-bold text-white">C</span>
+			<input type="number" min="0" max="255" class="rounded-full px-2 text-black" bind:value={c} />
 		</li>
 		<li>
-			<span class="text-white font-b255">M</span>
-			<input type="number" min="0" max="255" class="rounded-full text-black px-2" bind:value={m} />
+			<span class="font-b255 text-white">M</span>
+			<input type="number" min="0" max="255" class="rounded-full px-2 text-black" bind:value={m} />
 		</li>
 		<li>
-			<span class="text-white font-b255">Y</span>
-			<input type="number" min="0" max="255" class="rounded-full text-black px-2" bind:value={y} />
+			<span class="font-b255 text-white">Y</span>
+			<input type="number" min="0" max="255" class="rounded-full px-2 text-black" bind:value={y} />
 		</li>
 		<li>
-			<span class="text-white font-b255">K</span>
-			<input type="number" min="0" max="255" class="rounded-full text-black px-2" bind:value={k} />
+			<span class="font-b255 text-white">K</span>
+			<input type="number" min="0" max="255" class="rounded-full px-2 text-black" bind:value={k} />
 		</li>
 	</ul>
 </div>
 
-<h2 class="text-center text-4xl text-white font-bold mt-2">Color Preview</h2>
+<h2 class="mt-2 text-center text-4xl font-bold text-white">Color Preview</h2>
 <div
 	style="background-color: {$currentColor}"
-	class="h-12 my-2 rounded-full border-white border-solid border-2"
+	class="my-2 h-12 rounded-full border-2 border-solid border-white"
 ></div>
