@@ -10,6 +10,6 @@ export function RgbToCmyk(arg1, arg2, arg3) {
   return window['go']['main']['App']['RgbToCmyk'](arg1, arg2, arg3);
 }
 
-export function SaveCanvasImg(arg1) {
-  return window['go']['main']['App']['SaveCanvasImg'](arg1);
+export function SaveCanvasImg(arg1, arg2) {
+  return window['go']['main']['App']['SaveCanvasImg'](arg1, arg2);
 }

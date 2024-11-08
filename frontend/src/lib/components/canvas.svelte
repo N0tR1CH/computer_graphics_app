@@ -94,7 +94,8 @@
 					x1: cursorPosition.x,
 					y1: cursorPosition.y,
 					text: '',
-					hexColor: $currentColor
+					hexColor: $currentColor,
+					baseUrlImage: ''
 				}
 			];
 			return;
@@ -272,7 +273,7 @@
 
 		if (activeAction === 'Save') {
 			const dataURI = canvas.toDataURL('image/jpeg');
-			SaveCanvasImg(dataURI);
+			SaveCanvasImg(dataURI, 'jpeg');
 			return;
 		}
 
