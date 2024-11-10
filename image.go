@@ -77,15 +77,6 @@ func (format ImageFormat) filters() (displayName string, pattern string) {
 	return displayName, pattern
 }
 
-func (format ImageFormat) extension() string {
-	switch format {
-	case pbmP1, pbmP4, pgmP2, pgmP5, ppmP3, ppmP6:
-		return string(format[:3])
-	default:
-		return string(format)
-	}
-}
-
 func (format ImageFormat) plain() bool {
 	switch format {
 	case pbmP1, pgmP2, ppmP3:
