@@ -13,6 +13,7 @@
 	export let shapes: Shape[];
 	export let activeAction: PossibleActions;
 	export let selectedFileFormat: main.ImageFormat;
+	export let comments: string[] = [];
 
 	let canvas: HTMLCanvasElement;
 	let ctx: CanvasRenderingContext2D | null;
@@ -274,7 +275,8 @@
 
 		if (activeAction === 'Save') {
 			const dataURI = canvas.toDataURL('image/jpeg');
-			SaveCanvasImg(dataURI, selectedFileFormat);
+			SaveCanvasImg(dataURI, selectedFileFormat, comments);
+			comments = [];
 			return;
 		}
 

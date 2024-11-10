@@ -127,7 +127,12 @@ func dataFromBase64(ctx context.Context, base64Image string) (string, error) {
 	return parts[1], nil
 }
 
-func rightImgBytes(imgBytes []byte, format ImageFormat, ctx context.Context) ([]byte, error) {
+func rightImgBytes(
+	imgBytes []byte,
+	format ImageFormat,
+	comments []string,
+	ctx context.Context,
+) ([]byte, error) {
 	if !format.netpbm() {
 		return imgBytes, nil
 	}
@@ -137,7 +142,7 @@ func rightImgBytes(imgBytes []byte, format ImageFormat, ctx context.Context) ([]
 	if err := netpbm.Encode(&buf, img, &netpbm.EncodeOptions{
 		Format:   format.format(),
 		Plain:    format.plain(),
-		Comments: []string{},
+		Comments: comments,
 	}); err != nil {
 		runtime.MessageDialog(ctx, runtime.MessageDialogOptions{
 			Type:          runtime.InfoDialog,
@@ -160,7 +165,12 @@ func rightImgBytes(imgBytes []byte, format ImageFormat, ctx context.Context) ([]
 	return imgBytes, nil
 }
 
-func (a *App) SaveCanvasImg(base64Image string, format ImageFormat) {
+func (a *App) SaveCanvasImg(
+	base64Image string,
+	format ImageFormat,
+	comments []string,
+) {
+	fmt.Println(comments)
 	if err := format.validate(a.ctx); err != nil {
 		return
 	}
@@ -202,7 +212,7 @@ func (a *App) SaveCanvasImg(base64Image string, format ImageFormat) {
 		return
 	}
 
-	imgBytes, err = rightImgBytes(imgBytes, format, a.ctx)
+	imgBytes, err = rightImgBytes(imgBytes, format, comments, a.ctx)
 	if err != nil {
 		return
 	}

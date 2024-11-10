@@ -39,6 +39,8 @@
 		main.ImageFormat.ppmP3,
 		main.ImageFormat.ppmP6
 	];
+	let comments: string[] = [];
+	let currentCommentInput: string = '';
 	let selectedFileFormat: main.ImageFormat = main.ImageFormat.jpg;
 </script>
 
@@ -76,14 +78,15 @@
 </ToolBar>
 
 {#if activeAction == 'Save'}
-	<form class="max-w-sm mx-auto my-4">
-		<label for="format" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+	<form class="mx-auto my-4 max-w-sm">
+		<label for="format" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
 			File format options
 		</label>
 		<select
 			bind:value={selectedFileFormat}
+			on:change={() => (comments = [])}
 			id="format"
-			class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+			class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
 		>
 			{#each fileFormats as fileFormat}
 				<option value={fileFormat}>
@@ -91,10 +94,46 @@
 				</option>
 			{/each}
 		</select>
+
+		{#if selectedFileFormat != main.ImageFormat.jpg}
+			<div class="my-4">
+				<label for="comment" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+					>Komentarz</label
+				>
+				<input
+					type="text"
+					bind:value={currentCommentInput}
+					id="comment"
+					class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+				/>
+				<button
+					on:click={() => {
+						if (currentCommentInput != '') {
+							comments = [...comments, currentCommentInput];
+							currentCommentInput = '';
+						}
+					}}
+					type="button"
+					class="my-2 mb-2 rounded-lg bg-purple-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-purple-800 focus:outline-none focus:ring-4 focus:ring-purple-300 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900"
+					>Dodaj</button
+				>
+			</div>
+			{#each comments as comment}
+				<span class="text-white">#{comment},&nbsp;</span>
+			{/each}
+		{/if}
 	</form>
 {/if}
 
-<Canvas height={500} width={1240} bind:shapes bind:activeAction bind:text bind:selectedFileFormat>
+<Canvas
+	height={500}
+	width={1240}
+	bind:shapes
+	bind:activeAction
+	bind:text
+	bind:selectedFileFormat
+	bind:comments
+>
 	{#each shapes as shape}
 		{#if shape.name === 'Rectangle'}
 			<Rectangle
