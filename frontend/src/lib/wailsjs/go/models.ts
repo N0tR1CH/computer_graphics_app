@@ -1,5 +1,14 @@
 export namespace main {
 	
+	export enum ImageFormat {
+	    jpg = "jpeg",
+	    pbmP1 = "pbmP1",
+	    pbmP4 = "pbmP4",
+	    pgmP2 = "pgmP2",
+	    pgmP5 = "pgmP5",
+	    ppmP3 = "ppmP3",
+	    ppmP6 = "ppmP6",
+	}
 	export class Cmyk {
 	    c: number;
 	    m: number;

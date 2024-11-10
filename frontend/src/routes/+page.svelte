@@ -22,12 +22,24 @@
 	import ColorPickers from '$lib/components/color_picking/color_pickers.svelte';
 	import ThirdDimensionCanvas from '$lib/components/third_dimension_canvas.svelte';
 	import Image from '$lib/components/shapes/image.svelte';
+	import { main } from '$lib/wailsjs/go/models';
 
 	let activeAction: PossibleActions = 'Triangle';
 	let text: string = '';
 	let shapes: Shape[] = [];
 	let sceneWidth: number = 350;
 	let sceneHeight: number = 350;
+
+	let fileFormats: main.ImageFormat[] = [
+		main.ImageFormat.jpg,
+		main.ImageFormat.pbmP1,
+		main.ImageFormat.pbmP4,
+		main.ImageFormat.pgmP2,
+		main.ImageFormat.pgmP5,
+		main.ImageFormat.ppmP3,
+		main.ImageFormat.ppmP6
+	];
+	let selectedFileFormat: main.ImageFormat = main.ImageFormat.jpg;
 </script>
 
 <TopBar>
@@ -62,7 +74,27 @@
 		<TextOutline {activeAction} />
 	</ToolBarButton>
 </ToolBar>
-<Canvas height={500} width={1240} bind:shapes bind:activeAction bind:text>
+
+{#if activeAction == 'Save'}
+	<form class="max-w-sm mx-auto my-4">
+		<label for="format" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+			File format options
+		</label>
+		<select
+			bind:value={selectedFileFormat}
+			id="format"
+			class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+		>
+			{#each fileFormats as fileFormat}
+				<option value={fileFormat}>
+					{fileFormat}
+				</option>
+			{/each}
+		</select>
+	</form>
+{/if}
+
+<Canvas height={500} width={1240} bind:shapes bind:activeAction bind:text bind:selectedFileFormat>
 	{#each shapes as shape}
 		{#if shape.name === 'Rectangle'}
 			<Rectangle
@@ -126,17 +158,17 @@
 {#key sceneWidth + sceneHeight}
 	<ThirdDimensionCanvas bind:shapes width={sceneWidth} height={sceneHeight}></ThirdDimensionCanvas>
 {/key}
-<div class="flex justify-center gap-x-4 mb-4">
-	<label for="" class="text-white font-bold">
+<div class="mb-4 flex justify-center gap-x-4">
+	<label for="" class="font-bold text-white">
 		Width of the scene
 		<input type="number" bind:value={sceneWidth} class="rounded-xl p-2 text-black" />
 	</label>
-	<label for="" class="text-white font-bold">
+	<label for="" class="font-bold text-white">
 		Height of the scene
 		<input type="number" bind:value={sceneHeight} class="rounded-xl p-2 text-black" />
 	</label>
 </div>
-<p class="text-center text-white mb-4 font-bold">
+<p class="mb-4 text-center font-bold text-white">
 	Cube is being added to fixed position but you can change it by using move tool although it is
 	clunky (3d to 2d ehh)
 </p>
@@ -144,5 +176,15 @@
 <style lang="postcss">
 	:global(html) {
 		background-color: rgba(0, 0, 0, 0);
+	}
+
+	select {
+		-webkit-appearance: none;
+		-moz-appearance: none;
+		appearance: none;
+	}
+
+	select::-ms-expand {
+		display: none;
 	}
 </style>

@@ -6,4 +6,4 @@ export function CmykToRgb(arg1:number,arg2:number,arg3:number,arg4:number):Promi
 
 export function RgbToCmyk(arg1:number,arg2:number,arg3:number):Promise<main.Cmyk>;
 
-export function SaveCanvasImg(arg1:string,arg2:main.imageFormat):Promise<void>;
+export function SaveCanvasImg(arg1:string,arg2:main.ImageFormat):Promise<void>;

@@ -37,6 +37,9 @@ func main() {
 		Bind: []any{
 			app,
 		},
+		EnumBind: []any{
+			AllImageFormats,
+		},
 		Windows: &windows.Options{
 			WindowIsTranslucent:  true,
 			WebviewIsTransparent: true,

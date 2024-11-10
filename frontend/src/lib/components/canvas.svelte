@@ -3,15 +3,16 @@
 	import type { PossibleActions } from '../../types/possible_actions';
 	import type { Shape } from '../../types/shape';
 	import { currentColor } from '$lib/stores/stores';
-
 	import { setContext, onMount } from 'svelte';
 	import { SaveCanvasImg } from '$lib/wailsjs/go/main/App';
+	import { main } from '$lib/wailsjs/go/models';
 
 	export let text;
 	export let width = 0;
 	export let height = 0;
 	export let shapes: Shape[];
 	export let activeAction: PossibleActions;
+	export let selectedFileFormat: main.ImageFormat;
 
 	let canvas: HTMLCanvasElement;
 	let ctx: CanvasRenderingContext2D | null;
@@ -273,7 +274,7 @@
 
 		if (activeAction === 'Save') {
 			const dataURI = canvas.toDataURL('image/jpeg');
-			SaveCanvasImg(dataURI, 'jpeg');
+			SaveCanvasImg(dataURI, selectedFileFormat);
 			return;
 		}
 
