@@ -2,7 +2,9 @@ package main
 
 import (
 	"bytes"
+	"context"
 	"encoding/base64"
+	"errors"
 	"fmt"
 	"image/jpeg"
 	"io"
@@ -42,49 +44,132 @@ var AllImageFormats = []struct {
 	{ppmP6, "ppmP6"},
 }
 
-func (format ImageFormat) validate() error {
+func (format ImageFormat) validate(ctx context.Context) error {
 	switch format {
 	case jpg, pbmP1, pbmP4, pgmP2, pgmP5, ppmP3, ppmP6:
 		return nil
 	default:
+		runtime.MessageDialog(ctx, runtime.MessageDialogOptions{
+			Type:          runtime.InfoDialog,
+			Title:         "Could not proceed with the operation",
+			Message:       fmt.Sprintf("'%s' is invalid file format, possible ones are jpeg, pbm, pgm, ppm", format),
+			DefaultButton: "Ok",
+		})
 		return errImageFormatUnknown
 	}
+}
+
+func (format ImageFormat) netpbm() bool {
+	switch format {
+	case pbmP1, pbmP4, pgmP2, pgmP5, ppmP3, ppmP6:
+		return true
+	default:
+		return false
+	}
+}
+
+func (format ImageFormat) filters() (displayName string, pattern string) {
+	displayName, pattern = "JPEG Image", "*.jpg"
+	if format.netpbm() {
+		displayName = fmt.Sprintf("%s", strings.ToUpper(string(format[:3])))
+		pattern = fmt.Sprintf("*.%s", string(format[:3]))
+	}
+	return displayName, pattern
+}
+
+func (format ImageFormat) extension() string {
+	switch format {
+	case pbmP1, pbmP4, pgmP2, pgmP5, ppmP3, ppmP6:
+		return string(format[:3])
+	default:
+		return string(format)
+	}
+}
+
+func (format ImageFormat) plain() bool {
+	switch format {
+	case pbmP1, pgmP2, ppmP3:
+		return true
+	default:
+		return false
+	}
+}
+
+func (format ImageFormat) format() netpbm.Format {
+	switch format {
+	case pbmP1, pbmP4:
+		return netpbm.PBM
+	case pgmP2, pgmP5:
+		return netpbm.PGM
+	case ppmP3, ppmP6:
+		return netpbm.PPM
+	}
+	return -1
 }
 
 func (e ImageFormatErr) Error() string {
 	return string(e)
 }
 
-func (a *App) SaveCanvasImg(base64Image string, format ImageFormat) {
-	if err := format.validate(); err != nil {
-		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-			Type:          runtime.InfoDialog,
-			Title:         "Could not proceed with the operation",
-			Message:       fmt.Sprintf("'%s' is invalid file format, possible ones are jpeg, pbm, pgm, ppm", format),
-			DefaultButton: "Ok",
-		})
-		return
-	}
-
-	runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-		Type:          runtime.InfoDialog,
-		Title:         "Could not proceed with the operation",
-		Message:       fmt.Sprintf("'%s' is invalid file format, possible ones are jpeg, pbm, pgm, ppm", format),
-		DefaultButton: "Ok",
-	})
-
+func dataFromBase64(ctx context.Context, base64Image string) (string, error) {
 	parts := strings.Split(base64Image, ",")
 	if len(parts) != 2 {
-		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+		msg := "Invalid data URI format"
+		runtime.MessageDialog(ctx, runtime.MessageDialogOptions{
 			Type:          runtime.InfoDialog,
 			Title:         "Could not proceed with the operation",
-			Message:       "Invalid data URI format",
+			Message:       msg,
 			DefaultButton: "Ok",
 		})
+		return "", errors.New(msg)
+	}
+
+	return parts[1], nil
+}
+
+func rightImgBytes(imgBytes []byte, format ImageFormat, ctx context.Context) ([]byte, error) {
+	if !format.netpbm() {
+		return imgBytes, nil
+	}
+
+	img, err := jpeg.Decode(bytes.NewReader(imgBytes))
+	var buf bytes.Buffer
+	if err := netpbm.Encode(&buf, img, &netpbm.EncodeOptions{
+		Format:   format.format(),
+		Plain:    format.plain(),
+		Comments: []string{},
+	}); err != nil {
+		runtime.MessageDialog(ctx, runtime.MessageDialogOptions{
+			Type:          runtime.InfoDialog,
+			Title:         "Encoding problem",
+			Message:       "Image could not be encoded",
+			DefaultButton: "Ok",
+		})
+	}
+
+	imgBytes, err = io.ReadAll(&buf)
+	if err != nil {
+		runtime.MessageDialog(ctx, runtime.MessageDialogOptions{
+			Type:          runtime.InfoDialog,
+			Title:         "Decoding problem",
+			Message:       "Image could not be decoded",
+			DefaultButton: "Ok",
+		})
+		return nil, errors.New("Image could not be decoded")
+	}
+	return imgBytes, nil
+}
+
+func (a *App) SaveCanvasImg(base64Image string, format ImageFormat) {
+	if err := format.validate(a.ctx); err != nil {
 		return
 	}
 
-	data := parts[1]
+	data, err := dataFromBase64(a.ctx, base64Image)
+	if err != nil {
+		return
+	}
+
 	imgBytes, err := base64.StdEncoding.DecodeString(data)
 	if err != nil {
 		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
@@ -96,39 +181,13 @@ func (a *App) SaveCanvasImg(base64Image string, format ImageFormat) {
 		return
 	}
 
-	reader := bytes.NewReader(imgBytes)
-	img, err := jpeg.Decode(reader)
-
-	var buf bytes.Buffer
-	if err := netpbm.Encode(&buf, img, &netpbm.EncodeOptions{
-		Format:   netpbm.PBM,
-		Plain:    true,
-		Comments: []string{"dupa", "sraka"},
-	}); err != nil {
-		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-			Type:          runtime.InfoDialog,
-			Title:         "Encoding problem",
-			Message:       "Image could not be encoded",
-			DefaultButton: "Ok",
-		})
-	}
-
-	if err != nil {
-		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-			Type:          runtime.InfoDialog,
-			Title:         "Decoding problem",
-			Message:       "Image could not be decoded",
-			DefaultButton: "Ok",
-		})
-		return
-	}
-
+	displayName, pattern := format.filters()
 	filepath, err := runtime.SaveFileDialog(a.ctx, runtime.SaveDialogOptions{
 		DefaultFilename: "canvas",
 		Filters: []runtime.FileFilter{
 			{
-				DisplayName: "JPEG Image *.jpg",
-				Pattern:     "*.jpg",
+				DisplayName: displayName,
+				Pattern:     pattern,
 			},
 		},
 	})
@@ -143,9 +202,9 @@ func (a *App) SaveCanvasImg(base64Image string, format ImageFormat) {
 		return
 	}
 
-	bytes, err := io.ReadAll(&buf)
-	if err := os.WriteFile("./file.pbm", bytes, 0644); err != nil {
-
+	imgBytes, err = rightImgBytes(imgBytes, format, a.ctx)
+	if err != nil {
+		return
 	}
 
 	if err := os.WriteFile(filepath, imgBytes, 0644); err != nil {
