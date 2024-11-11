@@ -24,6 +24,16 @@
 	import Image from '$lib/components/shapes/image.svelte';
 	import { main } from '$lib/wailsjs/go/models';
 
+	type NetPBMimg = {
+		resource: string;
+		comments: string[];
+		status: string;
+	};
+
+	import { UploadNetPbmImg } from '$lib/wailsjs/go/main/Worker';
+	import { EventsOnce } from '$lib/wailsjs/runtime/runtime';
+
+	let netpbmImages: NetPBMimg[] = [];
 	let activeAction: PossibleActions = 'Triangle';
 	let text: string = '';
 	let shapes: Shape[] = [];
@@ -78,7 +88,7 @@
 </ToolBar>
 
 {#if activeAction == 'Save'}
-	<form class="mx-auto my-4 max-w-sm">
+	<div class="mx-auto my-4 max-w-sm">
 		<label for="format" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
 			File format options
 		</label>
@@ -122,8 +132,64 @@
 				<span class="text-white">#{comment},&nbsp;</span>
 			{/each}
 		{/if}
-	</form>
+	</div>
 {/if}
+
+<button
+	type="button"
+	class="my-4 mb-2 me-2 w-full rounded-full bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+	on:click={async () => {
+		const uuid = await UploadNetPbmImg();
+		if (uuid == '') {
+			return;
+		}
+		netpbmImages = [...netpbmImages, { resource: uuid, comments: [], status: 'queued' }];
+		EventsOnce(uuid, (comments, status) => {
+			netpbmImages[netpbmImages.length - 1].comments = comments;
+			netpbmImages[netpbmImages.length - 1].status = status;
+		});
+	}}>Upload NetPBMimg</button
+>
+
+<div class="relative overflow-x-auto">
+	<table class="my-4 w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
+		<thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+			<tr>
+				<th scope="col" class="px-6 py-3">Resource</th>
+				<th scope="col" class="px-6 py-3">Comments</th>
+				<th scope="col" class="px-6 py-3">Status</th>
+				<th scope="col" class="px-6 py-3">Action</th>
+			</tr>
+		</thead>
+		<tbody>
+			{#each netpbmImages as netpbmImage}
+				<tr class="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
+					<th
+						scope="row"
+						class="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white"
+					>
+						{netpbmImage.resource}
+					</th>
+					<td class="px-6 py-4">
+						{#each netpbmImage.comments as comment}
+							{comment},&nbsp;
+						{/each}
+					</td>
+					<td class="px-6 py-4">{netpbmImage.status}</td>
+					<td class="px-6 py-4">
+						{#if netpbmImage.status == 'completed'}
+							<button
+								type="button"
+								class="mb-2 me-2 rounded-full bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+								>Add</button
+							>
+						{/if}
+					</td>
+				</tr>
+			{/each}
+		</tbody>
+	</table>
+</div>
 
 <Canvas
 	height={500}
