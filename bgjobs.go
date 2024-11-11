@@ -11,14 +11,12 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
-// Job represents a unit of work
 type Job struct {
 	ID       string
 	FilePath string
 	comments []string
 }
 
-// Worker handles job processing
 type Worker struct {
 	jobQueue  chan Job
 	jobStatus map[string]string
@@ -26,7 +24,6 @@ type Worker struct {
 	app       *App
 }
 
-// NewWorker initializes the Worker with a single buffered channel
 func NewWorker(app *App) *Worker {
 	worker := &Worker{
 		jobQueue:  make(chan Job, 1), // Buffer size set to 1
@@ -58,7 +55,6 @@ func (w *Worker) UploadNetPbmImg() string {
 	return jobID
 }
 
-// processJobs processes jobs from the queue one at a time
 func (w *Worker) processJobs() {
 	for job := range w.jobQueue {
 		w.updateStatus(job.ID, "processing")
@@ -96,14 +92,12 @@ func (w *Worker) processJobs() {
 	}
 }
 
-// updateStatus safely updates the job status
 func (w *Worker) updateStatus(jobID, status string) {
 	w.lock.Lock()
 	defer w.lock.Unlock()
 	w.jobStatus[jobID] = status
 }
 
-// GetJobStatus returns the status of a job by ID
 func (w *Worker) GetJobStatus(jobID string) string {
 	w.lock.Lock()
 	defer w.lock.Unlock()

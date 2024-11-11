@@ -33,6 +33,29 @@
 	import { UploadNetPbmImg } from '$lib/wailsjs/go/main/Worker';
 	import { EventsOnce } from '$lib/wailsjs/runtime/runtime';
 
+	window.addEventListener('keydown', (event) => {
+		switch (event.key) {
+			case 'ArrowLeft':
+				if (shapes.length > 0) {
+					shapes[shapes.length - 1].x = shapes[shapes.length - 1].x - 5;
+				}
+				console.log('Left pressed');
+				break;
+			case 'ArrowRight':
+				console.log('Right pressed');
+				shapes[shapes.length - 1].x = shapes[shapes.length - 1].x + 5;
+				break;
+			case 'ArrowUp':
+				console.log('Up pressed');
+				shapes[shapes.length - 1].y = shapes[shapes.length - 1].y - 5;
+				break;
+			case 'ArrowDown':
+				console.log('Down pressed');
+				shapes[shapes.length - 1].y = shapes[shapes.length - 1].y + 5;
+				break;
+		}
+	});
+
 	let netpbmImages: NetPBMimg[] = [];
 	let activeAction: PossibleActions = 'Triangle';
 	let text: string = '';
@@ -86,6 +109,10 @@
 		<TextOutline {activeAction} />
 	</ToolBarButton>
 </ToolBar>
+
+<p class="text-center text-white text-2xl text-bold">
+	Now arrows keys can also move images and shapes!
+</p>
 
 {#if activeAction == 'Save'}
 	<div class="mx-auto my-4 max-w-sm">
