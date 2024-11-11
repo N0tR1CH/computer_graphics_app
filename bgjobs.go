@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bytes"
+	"encoding/base64"
 	"fmt"
 	"image/jpeg"
 	"log"
@@ -74,21 +76,17 @@ func (w *Worker) processJobs() {
 			log.Fatal(err)
 		}
 
-		outFile, err := os.Create(fmt.Sprintf("./images/file%s.jpeg", job.ID))
-		if err != nil {
-			log.Fatal(err)
-		}
-		if err := jpeg.Encode(outFile, img, &jpeg.Options{Quality: 50}); err != nil {
+		var buf bytes.Buffer
+		if err := jpeg.Encode(&buf, img, &jpeg.Options{Quality: 50}); err != nil {
 			panic(err)
 		}
-		if err := outFile.Close(); err != nil {
-			panic(err)
-		}
+
+		base64str := base64.StdEncoding.EncodeToString(buf.Bytes())
 
 		job.comments = comments
 
 		w.updateStatus(job.ID, "completed")
-		runtime.EventsEmit(w.app.ctx, job.ID, job.comments, w.jobStatus[job.ID])
+		runtime.EventsEmit(w.app.ctx, job.ID, job.comments, w.jobStatus[job.ID], base64str)
 	}
 }
 

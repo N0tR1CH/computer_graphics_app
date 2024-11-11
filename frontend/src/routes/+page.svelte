@@ -28,6 +28,7 @@
 		resource: string;
 		comments: string[];
 		status: string;
+		base64str: string;
 	};
 
 	import { UploadNetPbmImg } from '$lib/wailsjs/go/main/Worker';
@@ -170,13 +171,17 @@
 		if (uuid == '') {
 			return;
 		}
-		netpbmImages = [...netpbmImages, { resource: uuid, comments: [], status: 'queued' }];
-		EventsOnce(uuid, (comments, status) => {
+		netpbmImages = [
+			...netpbmImages,
+			{ resource: uuid, comments: [], status: 'queued', base64str: '' }
+		];
+		EventsOnce(uuid, (comments, status, base64str) => {
 			if (comments == null) {
 				comments = [];
 			}
 			netpbmImages[netpbmImages.length - 1].comments = comments;
 			netpbmImages[netpbmImages.length - 1].status = status;
+			netpbmImages[netpbmImages.length - 1].base64str = base64str;
 		});
 	}}>Upload NetPBMimg</button
 >
@@ -226,7 +231,7 @@
 											y1: 0,
 											text: '',
 											hexColor: '',
-											baseUrlImage: `http:localhost:3000/images/file${netpbmImage.resource}.jpeg`
+											baseUrlImage: `data:image/jpeg;base64,${netpbmImage.base64str}`
 										}
 									];
 								}}
