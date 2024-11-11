@@ -37,13 +37,7 @@
 		};
 	});
 
-	$: if (image && (baseUrlImage !== image.src || unregister)) {
-		if (unregister) {
-			unregister();
-		}
-
-		image.src = baseUrlImage;
-
+	$: if ((x || y) && image) {
 		if (image.complete) {
 			registerDraw();
 		}
