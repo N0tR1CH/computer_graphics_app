@@ -145,6 +145,9 @@
 		}
 		netpbmImages = [...netpbmImages, { resource: uuid, comments: [], status: 'queued' }];
 		EventsOnce(uuid, (comments, status) => {
+			if (comments == null) {
+				comments = [];
+			}
 			netpbmImages[netpbmImages.length - 1].comments = comments;
 			netpbmImages[netpbmImages.length - 1].status = status;
 		});
@@ -179,6 +182,27 @@
 					<td class="px-6 py-4">
 						{#if netpbmImage.status == 'completed'}
 							<button
+								on:click={() => {
+									shapes = [
+										...shapes,
+										{
+											name: 'Image',
+											x: 100,
+											y: 100,
+											height: 0,
+											width: 0,
+											base: 0,
+											radius1: 0,
+											radius2: 0,
+											rotation: 0,
+											x1: 0,
+											y1: 0,
+											text: '',
+											hexColor: '',
+											baseUrlImage: `http:localhost:3000/images/file${netpbmImage.resource}.jpeg`
+										}
+									];
+								}}
 								type="button"
 								class="mb-2 me-2 rounded-full bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
 								>Add</button

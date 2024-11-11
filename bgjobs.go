@@ -2,6 +2,9 @@ package main
 
 import (
 	"fmt"
+	"image/jpeg"
+	"log"
+	"os"
 	"sync"
 
 	"github.com/google/uuid"
@@ -60,10 +63,33 @@ func (w *Worker) processJobs() {
 	for job := range w.jobQueue {
 		w.updateStatus(job.ID, "processing")
 
-		// Process the job
 		fmt.Println("Processing file:", job.FilePath)
-		// Add your processing logic here
-		job.comments = []string{"dsadsa", "dsadsa"}
+
+		file, err := os.Open(job.FilePath)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		img, comments, err := parseNetPbm(file)
+		if err != nil {
+			w.updateStatus(job.ID, "failed")
+		}
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		outFile, err := os.Create(fmt.Sprintf("./images/file%s.jpeg", job.ID))
+		if err != nil {
+			log.Fatal(err)
+		}
+		if err := jpeg.Encode(outFile, img, &jpeg.Options{Quality: 50}); err != nil {
+			panic(err)
+		}
+		if err := outFile.Close(); err != nil {
+			panic(err)
+		}
+
+		job.comments = comments
 
 		w.updateStatus(job.ID, "completed")
 		runtime.EventsEmit(w.app.ctx, job.ID, job.comments, w.jobStatus[job.ID])
