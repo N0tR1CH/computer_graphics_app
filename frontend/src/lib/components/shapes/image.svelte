@@ -3,35 +3,60 @@
 	import type { DrawFunction } from '../../../types/draw_function.ts';
 
 	export let baseUrlImage: string;
-	export let x: number;
-	export let y: number;
+	export let x: number = 0;
+	export let y: number = 0;
 
-	type CanvasContext = {
+	type CanvasContextType = {
 		registerDrawFunction: (fn: DrawFunction) => () => void;
 		redrawCanvas: () => void;
 	};
 
-	const { registerDrawFunction, redrawCanvas } = getContext<CanvasContext>('canvas');
+	const { registerDrawFunction, redrawCanvas } = getContext<CanvasContextType>('canvas');
 
-	$: if ((x, y)) {
-		redrawCanvas();
-	}
+	let image: HTMLImageElement | null = null;
+	let unregister: (() => void) | null = null;
 
 	onMount(() => {
-		const unregister = registerDrawFunction(draw);
+		image = new Image();
+		image.src = baseUrlImage;
+
+		image.onload = () => {
+			// Register the draw function after the image has loaded
+			registerDraw();
+		};
+
+		image.onerror = (error) => {
+			console.error('Error loading image:', error);
+		};
+
 		return () => {
-			unregister();
+			if (unregister) {
+				unregister();
+			}
 			redrawCanvas();
 		};
 	});
 
+	$: if (image && (baseUrlImage !== image.src || unregister)) {
+		if (unregister) {
+			unregister();
+		}
+
+		image.src = baseUrlImage;
+
+		if (image.complete) {
+			registerDraw();
+		}
+	}
+
+	function registerDraw() {
+		unregister = registerDrawFunction(draw);
+		redrawCanvas(); // Trigger a redraw after registering the draw function
+	}
+
 	function draw(ctx: CanvasRenderingContext2D | null) {
-		if (ctx) {
-			const image = new Image();
-			image.onload = () => {
-				ctx.drawImage(image, x, y);
-			};
-			image.src = baseUrlImage;
+		if (ctx && image && image.complete) {
+			ctx.drawImage(image, x, y);
 		}
 	}
 </script>

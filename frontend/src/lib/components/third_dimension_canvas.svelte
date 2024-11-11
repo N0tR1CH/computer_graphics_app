@@ -12,7 +12,7 @@
 	let controls: OrbitControls;
 
 	const DownloadCanvasAsImage = () => {
-		const baseUrlImage = renderer.domElement.toDataURL('image/png');
+		const baseUrlImage = renderer.domElement.toDataURL('image/webp');
 		shapes = [
 			...shapes,
 			{
