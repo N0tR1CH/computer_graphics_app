@@ -71,7 +71,7 @@ func (format ImageFormat) netpbm() bool {
 func (format ImageFormat) filters() (displayName string, pattern string) {
 	displayName, pattern = "JPEG Image", "*.jpg"
 	if format.netpbm() {
-		displayName = fmt.Sprintf("%s", strings.ToUpper(string(format[:3])))
+		displayName = strings.ToUpper(string(format[:3]))
 		pattern = fmt.Sprintf("*.%s", string(format[:3]))
 	}
 	return displayName, pattern
@@ -105,7 +105,7 @@ func (e ImageFormatErr) Error() string {
 func dataFromBase64(ctx context.Context, base64Image string) (string, error) {
 	parts := strings.Split(base64Image, ",")
 	if len(parts) != 2 {
-		msg := "Invalid data URI format"
+		msg := "invalid data URI format"
 		runtime.MessageDialog(ctx, runtime.MessageDialogOptions{
 			Type:          runtime.InfoDialog,
 			Title:         "Could not proceed with the operation",
@@ -129,6 +129,9 @@ func rightImgBytes(
 	}
 
 	img, err := jpeg.Decode(bytes.NewReader(imgBytes))
+	if err != nil {
+		return nil, err
+	}
 	var buf bytes.Buffer
 	if err := netpbm.Encode(&buf, img, &netpbm.EncodeOptions{
 		Format:   format.format(),
@@ -151,7 +154,7 @@ func rightImgBytes(
 			Message:       "Image could not be decoded",
 			DefaultButton: "Ok",
 		})
-		return nil, errors.New("Image could not be decoded")
+		return nil, errors.New("image could not be decoded")
 	}
 	return imgBytes, nil
 }

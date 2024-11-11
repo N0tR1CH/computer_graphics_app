@@ -7,3 +7,6 @@ frontend/build
 
 # Vs code related
 .vscode
+
+# Images
+images/*

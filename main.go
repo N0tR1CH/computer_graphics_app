@@ -2,6 +2,8 @@ package main
 
 import (
 	"embed"
+	"log"
+	"net/http"
 
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
@@ -17,6 +19,14 @@ var assets embed.FS
 var icon []byte
 
 func main() {
+	// Create a server for image hosting
+	go func() {
+		fs := http.FileServer(http.Dir("./images"))
+		http.Handle("/images/", http.StripPrefix("/images/", fs))
+		if err := http.ListenAndServe(":3000", nil); err != nil {
+			log.Fatal(err)
+		}
+	}()
 	// Create an instance of the app structure
 	app := NewApp()
 
