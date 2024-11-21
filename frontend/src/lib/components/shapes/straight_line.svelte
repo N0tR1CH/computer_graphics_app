@@ -29,7 +29,7 @@
 		if (ctx) {
 			if (x === x1 && y === y1) {
 				// Draw a dot (small circle)
-				const radius = 2; // Adjust the radius as needed
+				const radius = 1; // Adjust the radius as needed
 				ctx.beginPath();
 				ctx.arc(x, y, radius, 0, 2 * Math.PI);
 				ctx.fillStyle = hexColor;

@@ -15,6 +15,7 @@
 	export let selectedFileFormat: main.ImageFormat;
 	export let comments: string[] = [];
 
+	let oldPos = { x: 0, y: 0 };
 	let canvas: HTMLCanvasElement;
 	let ctx: CanvasRenderingContext2D | null;
 	let scheduled = false;
@@ -93,13 +94,15 @@
 					radius1: 0,
 					radius2: 0,
 					rotation: 0,
-					x1: cursorPosition.x,
-					y1: cursorPosition.y,
+					x1: oldPos.x,
+					y1: oldPos.y,
 					text: '',
 					hexColor: $currentColor,
 					baseUrlImage: ''
 				}
 			];
+			oldPos.x = cursorPosition.x;
+			oldPos.y = cursorPosition.y;
 			return;
 		}
 
@@ -287,6 +290,8 @@
 		}
 
 		if (activeAction === 'Pencil') {
+			oldPos.x = cursorPosition.x;
+			oldPos.y = cursorPosition.y;
 			isPencil = true;
 		}
 
