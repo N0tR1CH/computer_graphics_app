@@ -10,3 +10,6 @@ frontend/build
 
 # Images
 images/*
+
+# pbm images
+*.pbm
