@@ -3,8 +3,9 @@
 	import * as THREE from 'three';
 	import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 	import { currentColor } from '$lib/stores/stores';
+	import type { Shape } from '../../types/shape';
 
-	export let shapes;
+	export let shapes: Shape[];
 	export let width: number = 350;
 	export let height: number = 350;
 	let canvasContainer: HTMLElement;
@@ -12,7 +13,7 @@
 	let controls: OrbitControls;
 
 	const DownloadCanvasAsImage = () => {
-		const baseUrlImage = renderer.domElement.toDataURL('image/webp');
+		const baseUrlImage = renderer.domElement.toDataURL('image/png');
 		shapes = [
 			...shapes,
 			{

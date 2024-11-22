@@ -37,6 +37,13 @@
 		};
 	});
 
+	$: if (image && baseUrlImage) {
+		image.src = baseUrlImage;
+		image.onload = () => {
+			registerDraw();
+		};
+	}
+
 	$: if ((x || y) && image) {
 		if (image.complete) {
 			registerDraw();

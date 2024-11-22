@@ -6,6 +6,14 @@ export function CmykToRgb(arg1, arg2, arg3, arg4) {
   return window['go']['main']['App']['CmykToRgb'](arg1, arg2, arg3, arg4);
 }
 
+export function HandleAlphaPointWiseTransformations(arg1, arg2) {
+  return window['go']['main']['App']['HandleAlphaPointWiseTransformations'](arg1, arg2);
+}
+
+export function HandleRgbPointWiseTransformations(arg1, arg2) {
+  return window['go']['main']['App']['HandleRgbPointWiseTransformations'](arg1, arg2);
+}
+
 export function RgbToCmyk(arg1, arg2, arg3) {
   return window['go']['main']['App']['RgbToCmyk'](arg1, arg2, arg3);
 }

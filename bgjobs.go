@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/base64"
 	"fmt"
-	"image/jpeg"
+	"image/png"
 	"log"
 	"os"
 	"sync"
@@ -77,7 +77,7 @@ func (w *Worker) processJobs() {
 		}
 
 		var buf bytes.Buffer
-		if err := jpeg.Encode(&buf, img, &jpeg.Options{Quality: 50}); err != nil {
+		if err := png.Encode(&buf, img); err != nil {
 			panic(err)
 		}
 

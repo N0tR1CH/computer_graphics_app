@@ -23,6 +23,7 @@
 	import ThirdDimensionCanvas from '$lib/components/third_dimension_canvas.svelte';
 	import Image from '$lib/components/shapes/image.svelte';
 	import { main } from '$lib/wailsjs/go/models';
+	import Swal from 'sweetalert2';
 
 	type NetPBMimg = {
 		resource: string;
@@ -33,6 +34,10 @@
 
 	import { UploadNetPbmImg } from '$lib/wailsjs/go/main/Worker';
 	import { EventsOnce } from '$lib/wailsjs/runtime/runtime';
+	import {
+		HandleRgbPointWiseTransformations,
+		HandleAlphaPointWiseTransformations
+	} from '$lib/wailsjs/go/main/App';
 
 	window.addEventListener('keydown', (event) => {
 		switch (event.key) {
@@ -111,7 +116,7 @@
 	</ToolBarButton>
 </ToolBar>
 
-<p class="text-center text-white text-2xl text-bold">
+<p class="text-bold text-center text-2xl text-white">
 	Now arrows keys can also move images and shapes!
 </p>
 
@@ -186,6 +191,127 @@
 	}}>Upload NetPBMimg</button
 >
 
+{#if shapes[shapes.length - 1] !== undefined && shapes[shapes.length - 1].baseUrlImage !== ''}
+	<div>
+		<button
+			type="button"
+			class="my-4 mb-2 me-2 w-full rounded-full bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+			on:click={async () => {
+				const { value } = await Swal.fire({
+					title: 'Point-wise transformation',
+					html: `
+                        <form class="max-w-sm mx-auto">
+                          <label for="actions" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-600">Choose an action</label>
+                          <select id="actions" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                            <option selected value="rgb">RGB</option>
+                            <option value="alpha">ALPHA</option>
+                            <option value="gray">MAKE IT GRAY</option>
+                          </select>
+                        </form>
+                          `,
+					focusConfirm: false,
+					preConfirm: () => document.getElementById('actions').value
+				});
+				switch (value) {
+					case 'rgb': {
+						const { value } = await Swal.fire({
+							title: 'Point-wise transformation',
+							html: `
+                                <form class="max-w-sm mx-auto">
+                          <label for="actions" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-600">Choose an action</label>
+                                  <select id="operation-select" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                    <option selected value="addition">Addition</option>
+                                    <option value="substraction">Substraction</option>
+                                    <option value="multiplication">Multiplication</option>
+                                    <option value="division">Divide</option>
+                                  </select>
+
+
+                                  <label for="colors" class="block mb-2 text-sm font-medium text-gray-900 dark:text-black">Red</label>
+                                <input id="red" type="number" min="0" max="255" value="0" />
+
+                                  <label for="colors" class="block mb-2 text-sm font-medium text-gray-900 dark:text-black">Green</label>
+                        <input id="green" type="number" min="0" max="255" value="0" />
+
+                                  <label for="colors" class="block mb-2 text-sm font-medium text-gray-900 dark:text-black">Blue</label>
+                        <input id="blue" type="number" min="0" max="255" value="0" />
+
+                                </form>
+                                  `,
+							focusConfirm: false,
+							preConfirm: () => {
+								return [
+									document.getElementById('operation-select').value,
+									document.getElementById('red').value,
+									document.getElementById('green').value,
+									document.getElementById('blue').value
+								];
+							}
+						});
+						// Validate numbers
+						for (let i = 1; i < 3; i++) {
+							if (Number(value[i]) < 0 || Number(value[i]) > 255) {
+								Swal.fire('RGB Numbers must be between 0 and 255!');
+								break;
+							}
+						}
+						const baseUrlImage = await HandleRgbPointWiseTransformations(
+							value,
+							shapes[shapes.length - 1].baseUrlImage
+						);
+						if (baseUrlImage == '') {
+							console.error('baseUrlImage is empty');
+							return;
+						}
+						shapes[shapes.length - 1].baseUrlImage = baseUrlImage;
+						break;
+					}
+					case 'alpha': {
+						const { value } = await Swal.fire({
+							title: 'Point-wise transformation',
+							html: `
+                                <form class="max-w-sm mx-auto">
+                                    <label for="alpha" class="block mb-2 text-sm font-medium text-gray-900 dark:text-black">Alpha - transparency level</label>
+                                    <input id="alpha" type="number" min="0" max="255" value="0" />
+                                </form>
+                                  `,
+							focusConfirm: false,
+							preConfirm: () => document.getElementById('alpha').value
+						});
+
+						if (Number(value) < 0 || Number(value) > 255) {
+							Swal.fire('Alpha Number must be between 0 and 255!');
+						}
+						const baseUrlImage = await HandleAlphaPointWiseTransformations(
+							Number(value),
+							shapes[shapes.length - 1].baseUrlImage
+						);
+						if (baseUrlImage == '') {
+							console.error('baseUrlImage is empty');
+							return;
+						}
+						shapes[shapes.length - 1].baseUrlImage = baseUrlImage;
+						break;
+					}
+					case 'gray': {
+						break;
+					}
+					default: {
+						Swal.fire('Problem!');
+						break;
+					}
+				}
+			}}>Apply point-wise intensity transformations to lastly inserted image</button
+		>
+	</div>
+
+	<button
+		type="button"
+		class="my-4 mb-2 me-2 w-full rounded-full bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+		>Lastly inserted image quality enhancement</button
+	>
+{/if}
+
 <div class="relative overflow-x-auto">
 	<table class="my-4 w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
 		<thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
@@ -231,7 +357,7 @@
 											y1: 0,
 											text: '',
 											hexColor: '',
-											baseUrlImage: `data:image/jpeg;base64,${netpbmImage.base64str}`
+											baseUrlImage: `data:image/png;base64,${netpbmImage.base64str}`
 										}
 									];
 								}}
