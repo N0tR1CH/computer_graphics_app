@@ -36,7 +36,8 @@
 	import { EventsOnce } from '$lib/wailsjs/runtime/runtime';
 	import {
 		HandleRgbPointWiseTransformations,
-		HandleAlphaPointWiseTransformations
+		HandleAlphaPointWiseTransformations,
+		HandleToGrayPointWiseTransformations
 	} from '$lib/wailsjs/go/main/App';
 
 	window.addEventListener('keydown', (event) => {
@@ -201,7 +202,7 @@
 					title: 'Point-wise transformation',
 					html: `
                         <form class="max-w-sm mx-auto">
-                          <label for="actions" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-600">Choose an action</label>
+                          <label for="actions" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-600">Choose grayness method</label>
                           <select id="actions" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                             <option selected value="rgb">RGB</option>
                             <option value="alpha">ALPHA</option>
@@ -294,6 +295,30 @@
 						break;
 					}
 					case 'gray': {
+						const { value } = await Swal.fire({
+							title: 'Grayness method',
+							html: `
+                                <form class="max-w-sm mx-auto">
+                          <label for="actions" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-600">Choose an action</label>
+                                  <select id="operation-select" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                    <option selected value="average">Average</option>
+                                    <option value="weights">Weights</option>
+                                  </select>
+                                </form>
+                                  `,
+							focusConfirm: false,
+							preConfirm: () => document.getElementById('operation-select').value
+						});
+
+						const baseUrlImage = await HandleToGrayPointWiseTransformations(
+							value,
+							shapes[shapes.length - 1].baseUrlImage
+						);
+						if (baseUrlImage == '') {
+							console.error('baseUrlImage is empty');
+							return;
+						}
+						shapes[shapes.length - 1].baseUrlImage = baseUrlImage;
 						break;
 					}
 					default: {

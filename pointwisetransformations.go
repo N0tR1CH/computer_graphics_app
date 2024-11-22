@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"context"
 	"encoding/base64"
 	"errors"
 	"fmt"
@@ -30,32 +31,82 @@ type pointWiseRgbValues struct {
 	op operation
 }
 
-func (a *App) HandleAlphaPointWiseTransformations(alphaVal uint8, base64str string) string {
-	var newBase64str string
-	data, err := dataFromBase64(a.ctx, base64str)
+func (a *App) HandleToGrayPointWiseTransformations(methodType string, base64str string) string {
+	m, err := decodeBasePngToImg(base64str, a.ctx)
+	if err != nil || m == nil {
+		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+			Type:          runtime.InfoDialog,
+			Title:         "Could not proceed with the operation",
+			Message:       fmt.Sprintf("Couldn't decode the image sry: %s", err.Error()),
+			DefaultButton: "Ok",
+		})
+	}
+	bounds := m.Bounds()
+	newM := image.NewGray(bounds)
+	for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
+		for x := bounds.Min.X; x < bounds.Max.X; x++ {
+			r16, g16, b16, _ := m.At(x, y).RGBA()
+			r8 := uint8(r16 >> 8)
+			g8 := uint8(g16 >> 8)
+			b8 := uint8(b16 >> 8)
+			var grayVal uint8
+			switch methodType {
+			case "average":
+				grayVal = r8/3 + g8/3 + b8/3
+			case "weights":
+				grayVal = uint8(0.299*float64(r8) + 0.587*float64(g8) + 0.114*float64(b8))
+			default:
+				runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+					Type:          runtime.InfoDialog,
+					Title:         "Invalid method type",
+					Message:       "Converting to gray scale can be used only with 'average' or 'weights' type",
+					DefaultButton: "Ok",
+				})
+				return ""
+			}
+
+			grayCol := color.Gray{Y: grayVal}
+			newM.Set(x, y, grayCol)
+		}
+	}
+	var buf bytes.Buffer
+	if err := png.Encode(&buf, newM); err != nil {
+		return ""
+	}
+	base64str = base64.StdEncoding.EncodeToString(buf.Bytes())
+	dataUrl := fmt.Sprintf("data:image/png;base64,%s", base64str)
+	return dataUrl
+}
+
+func decodeBasePngToImg(base64str string, ctx context.Context) (image.Image, error) {
+	data, err := dataFromBase64(ctx, base64str)
 	if err != nil {
-		return newBase64str
+		return nil, err
 	}
 	imgBytes, err := base64.StdEncoding.DecodeString(data)
 	if err != nil {
-		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-			Type:          runtime.InfoDialog,
-			Title:         "Could not proceed with the operation",
-			Message:       fmt.Sprintf("Couldn't decode the image sry: %s", err.Error()),
-			DefaultButton: "Ok",
-		})
-		return newBase64str
+		return nil, err
 	}
-	img, err := png.Decode(bytes.NewReader(imgBytes))
+	m, err := png.Decode(bytes.NewReader(imgBytes))
+	if err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (a *App) HandleAlphaPointWiseTransformations(alphaVal uint8, base64str string) string {
+	var newBase64str string
+	m, err := decodeBasePngToImg(base64str, a.ctx)
 	if err != nil {
 		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 			Type:          runtime.InfoDialog,
 			Title:         "Could not proceed with the operation",
-			Message:       fmt.Sprintf("Couldn't decode the image sry: %s", err.Error()),
+			Message:       "Who else know what",
 			DefaultButton: "Ok",
 		})
+		return ""
 	}
-	newBase64str = generateNewAlphaBase64Str(alphaVal, img)
+	newBase64str = generateNewAlphaBase64Str(alphaVal, m)
 	if newBase64str == "" {
 		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 			Type:          runtime.InfoDialog,
@@ -106,31 +157,8 @@ func (a *App) HandleRgbPointWiseTransformations(values []string, base64str strin
 		})
 		return newBase64str
 	}
-
-	data, err := dataFromBase64(a.ctx, base64str)
-	if err != nil {
-		return newBase64str
-	}
-	imgBytes, err := base64.StdEncoding.DecodeString(data)
-	if err != nil {
-		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-			Type:          runtime.InfoDialog,
-			Title:         "Could not proceed with the operation",
-			Message:       fmt.Sprintf("Couldn't decode the image sry: %s", err.Error()),
-			DefaultButton: "Ok",
-		})
-		return newBase64str
-	}
-	img, err := png.Decode(bytes.NewReader(imgBytes))
-	if err != nil {
-		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-			Type:          runtime.InfoDialog,
-			Title:         "Could not proceed with the operation",
-			Message:       fmt.Sprintf("Couldn't decode the image sry: %s", err.Error()),
-			DefaultButton: "Ok",
-		})
-	}
-	newBase64str = generateNewRgbBase64Str(*pwrv, img)
+	m, err := decodeBasePngToImg(base64str, a.ctx)
+	newBase64str = generateNewRgbBase64Str(*pwrv, m)
 	if newBase64str == "" {
 		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 			Type:          runtime.InfoDialog,
