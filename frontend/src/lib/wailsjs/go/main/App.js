@@ -10,6 +10,10 @@ export function HandleAlphaPointWiseTransformations(arg1, arg2) {
   return window['go']['main']['App']['HandleAlphaPointWiseTransformations'](arg1, arg2);
 }
 
+export function HandleFilterApplying(arg1) {
+  return window['go']['main']['App']['HandleFilterApplying'](arg1);
+}
+
 export function HandleRgbPointWiseTransformations(arg1, arg2) {
   return window['go']['main']['App']['HandleRgbPointWiseTransformations'](arg1, arg2);
 }

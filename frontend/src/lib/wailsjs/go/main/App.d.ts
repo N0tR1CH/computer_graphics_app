@@ -6,6 +6,8 @@ export function CmykToRgb(arg1:number,arg2:number,arg3:number,arg4:number):Promi
 
 export function HandleAlphaPointWiseTransformations(arg1:number,arg2:string):Promise<string>;
 
+export function HandleFilterApplying(arg1:string):Promise<string>;
+
 export function HandleRgbPointWiseTransformations(arg1:Array<string>,arg2:string):Promise<string>;
 
 export function HandleToGrayPointWiseTransformations(arg1:string,arg2:string):Promise<string>;
