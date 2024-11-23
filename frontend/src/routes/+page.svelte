@@ -189,7 +189,7 @@
 			netpbmImages[netpbmImages.length - 1].status = status;
 			netpbmImages[netpbmImages.length - 1].base64str = base64str;
 		});
-	}}>Upload NetPBMimg</button
+	}}>Upload Image</button
 >
 
 {#if shapes[shapes.length - 1] !== undefined && shapes[shapes.length - 1].baseUrlImage !== ''}

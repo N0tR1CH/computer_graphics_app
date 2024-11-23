@@ -4,13 +4,17 @@ import (
 	"bytes"
 	"encoding/base64"
 	"fmt"
+	"image"
+	"image/jpeg"
 	"image/png"
 	"log"
 	"os"
+	"path/filepath"
 	"sync"
 
 	"github.com/google/uuid"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
+	"golang.org/x/image/webp"
 )
 
 type Job struct {
@@ -68,7 +72,23 @@ func (w *Worker) processJobs() {
 			log.Fatal(err)
 		}
 
-		img, comments, err := parseNetPbm(file)
+		var (
+			img      image.Image
+			comments []string
+		)
+		switch filepath.Ext(job.FilePath) {
+		case ".jpg", ".jpeg":
+			img, err = jpeg.Decode(file)
+		case ".png":
+			img, err = png.Decode(file)
+		case ".webp":
+			img, err = webp.Decode(file)
+		case ".pbm", ".pgm", ".ppm", ".pnm":
+			img, comments, err = parseNetPbm(file)
+		default:
+			w.updateStatus(job.ID, "failed")
+		}
+
 		if err != nil {
 			w.updateStatus(job.ID, "failed")
 		}
