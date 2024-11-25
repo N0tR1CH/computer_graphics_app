@@ -10,6 +10,14 @@ export function HandleAlphaPointWiseTransformations(arg1, arg2) {
   return window['go']['main']['App']['HandleAlphaPointWiseTransformations'](arg1, arg2);
 }
 
+export function HandleBinarizeManual(arg1, arg2) {
+  return window['go']['main']['App']['HandleBinarizeManual'](arg1, arg2);
+}
+
+export function HandleBinarizePercentBlack(arg1, arg2) {
+  return window['go']['main']['App']['HandleBinarizePercentBlack'](arg1, arg2);
+}
+
 export function HandleFilterApplying(arg1) {
   return window['go']['main']['App']['HandleFilterApplying'](arg1);
 }

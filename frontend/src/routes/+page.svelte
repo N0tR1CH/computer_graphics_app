@@ -39,7 +39,9 @@
 		HandleAlphaPointWiseTransformations,
 		HandleToGrayPointWiseTransformations,
 		HandleFilterApplying,
-		HandleHistogram
+		HandleHistogram,
+		HandleBinarizeManual,
+		HandleBinarizePercentBlack
 	} from '$lib/wailsjs/go/main/App';
 
 	window.addEventListener('keydown', (event) => {
@@ -360,6 +362,82 @@
 		}}
 	>
 		Histogram actions
+	</button>
+
+	<button
+		type="button"
+		class="my-4 mb-2 me-2 w-full rounded-full bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+		on:click={async () => {
+			const { value } = await Swal.fire({
+				title: 'Binarisation',
+				html: `
+                    <form class="max-w-sm mx-auto">
+              <label for="actions" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-600">Choose an action</label>
+                      <select id="operation-select" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                        <option selected value="manual">Manual</option>
+                        <option value="percentblack">Percent Black selection</option>
+                        <option value="meaniterative">Mean iterative selection</option>
+                      </select>
+                    </form>
+                      `,
+				focusConfirm: false,
+				preConfirm: () => document.getElementById('operation-select').value
+			});
+
+			switch (value) {
+				case 'manual': {
+					const { value } = await Swal.fire({
+						title: 'Grayness method',
+						html: `
+                        <form class="max-w-sm mx-auto">
+                            <label for="colors" class="block mb-2 text-sm font-medium text-gray-900 dark:text-black">Threshold</label>
+                            <input id="threshold" type="number" min="0" max="255" value="0" />
+                        </form>
+                        `,
+						focusConfirm: false,
+						preConfirm: () => document.getElementById('threshold').value
+					});
+					const baseUrlImage = await HandleBinarizeManual(
+						shapes[shapes.length - 1].baseUrlImage,
+						Number(value)
+					);
+					if (baseUrlImage == '') {
+						console.error('baseUrlImage is empty');
+						return;
+					}
+					shapes[shapes.length - 1].baseUrlImage = baseUrlImage;
+				}
+
+				case 'percentblack': {
+					const { value } = await Swal.fire({
+						title: 'Grayness method',
+						html: `
+                        <form class="max-w-sm mx-auto">
+                            <label for="colors" class="block mb-2 text-sm font-medium text-gray-900 dark:text-black">
+                                Percent
+                            </label>
+                            <input id="threshold" type="number" min="0" max="100" value="0" step="0.01" />
+                        </form>
+                        `,
+						focusConfirm: false,
+						preConfirm: () => document.getElementById('threshold').value
+					});
+					const baseUrlImage = await HandleBinarizePercentBlack(
+						shapes[shapes.length - 1].baseUrlImage,
+						Number(value)
+					);
+					if (baseUrlImage == '') {
+						console.error('baseUrlImage is empty');
+						return;
+					}
+					shapes[shapes.length - 1].baseUrlImage = baseUrlImage;
+				}
+				case 'meaniterative': {
+				}
+			}
+		}}
+	>
+		Binarisation
 	</button>
 {/if}
 

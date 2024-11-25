@@ -6,6 +6,10 @@ export function CmykToRgb(arg1:number,arg2:number,arg3:number,arg4:number):Promi
 
 export function HandleAlphaPointWiseTransformations(arg1:number,arg2:string):Promise<string>;
 
+export function HandleBinarizeManual(arg1:string,arg2:number):Promise<string>;
+
+export function HandleBinarizePercentBlack(arg1:string,arg2:number):Promise<string>;
+
 export function HandleFilterApplying(arg1:string):Promise<string>;
 
 export function HandleHistogram(arg1:string):Promise<string>;
