@@ -43,6 +43,7 @@
 		HandleBinarizeManual,
 		HandleBinarizePercentBlack
 	} from '$lib/wailsjs/go/main/App';
+	import { HandleBinarizeMeanIterative } from '$lib/wailsjs/go/main/App';
 
 	window.addEventListener('keydown', (event) => {
 		switch (event.key) {
@@ -433,6 +434,34 @@
 					shapes[shapes.length - 1].baseUrlImage = baseUrlImage;
 				}
 				case 'meaniterative': {
+					const { value } = await Swal.fire({
+						title: 'Grayness method',
+						html: `
+                        <form class="max-w-sm mx-auto">
+                            <label for="colors" class="block mb-2 text-sm font-medium text-gray-900 dark:text-black">
+                                Iterations
+                            </label>
+                            <input id="iterations" type="number" min="0" max="100" value="0" step="1" />
+                        </form>
+                        `,
+						focusConfirm: false,
+						preConfirm: () => document.getElementById('iterations').value
+					});
+
+					if (Number(value) < 0 || Number(value) > 100) {
+						Swal.fire('Maximum number of iterations num must be between 0 and 100');
+						return;
+					}
+
+					const baseUrlImage = await HandleBinarizeMeanIterative(
+						shapes[shapes.length - 1].baseUrlImage,
+						Number(value)
+					);
+					if (baseUrlImage == '') {
+						console.error('baseUrlImage is empty');
+						return;
+					}
+					shapes[shapes.length - 1].baseUrlImage = baseUrlImage;
 				}
 			}
 		}}

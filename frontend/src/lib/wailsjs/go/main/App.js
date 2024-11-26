@@ -14,6 +14,10 @@ export function HandleBinarizeManual(arg1, arg2) {
   return window['go']['main']['App']['HandleBinarizeManual'](arg1, arg2);
 }
 
+export function HandleBinarizeMeanIterative(arg1, arg2) {
+  return window['go']['main']['App']['HandleBinarizeMeanIterative'](arg1, arg2);
+}
+
 export function HandleBinarizePercentBlack(arg1, arg2) {
   return window['go']['main']['App']['HandleBinarizePercentBlack'](arg1, arg2);
 }

@@ -8,6 +8,8 @@ export function HandleAlphaPointWiseTransformations(arg1:number,arg2:string):Pro
 
 export function HandleBinarizeManual(arg1:string,arg2:number):Promise<string>;
 
+export function HandleBinarizeMeanIterative(arg1:string,arg2:number):Promise<string>;
+
 export function HandleBinarizePercentBlack(arg1:string,arg2:number):Promise<string>;
 
 export function HandleFilterApplying(arg1:string):Promise<string>;
