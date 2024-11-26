@@ -7,6 +7,7 @@ import (
 	"image"
 	"image/color"
 	"image/png"
+	"math"
 	"slices"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
@@ -253,5 +254,66 @@ func binarizeOtsu(m image.Image) image.Image {
 			}
 		}
 	}
+	return binaryM
+}
+
+func (a *App) HandleBinarizeNiblack(base64str string, windowSize int, k float64) string {
+	if windowSize%2 == 0 || windowSize < 3 {
+		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+			Message: "Window size must be odd and >= 3",
+		})
+		return ""
+	}
+
+	m, err := decodeBasePngToImg(base64str, a.ctx)
+	if err != nil {
+		return ""
+	}
+
+	newM := binarizeNiblack(m, windowSize, k)
+	var buf bytes.Buffer
+	if err := png.Encode(&buf, newM); err != nil {
+		return ""
+	}
+
+	base64str = base64.StdEncoding.EncodeToString(buf.Bytes())
+	return fmt.Sprintf("data:image/png;base64,%s", base64str)
+}
+
+func binarizeNiblack(m image.Image, windowSize int, k float64) image.Image {
+	b := m.Bounds()
+	padding := windowSize / 2
+	binaryM := image.NewGray(b)
+
+	for y := 0; y < b.Dy(); y++ {
+		for x := 0; x < b.Dx(); x++ {
+			var sum, sumSq float64
+			var count int
+			for wy := -padding; wy <= padding; wy++ {
+				for wx := -padding; wx <= padding; wx++ {
+					nx, ny := x+wx, y+wy
+					if nx >= 0 && nx < b.Dx() && ny >= 0 && ny < b.Dy() {
+						px := m.At(nx, ny)
+						lum := color.GrayModel.Convert(px).(color.Gray).Y
+						sum += float64(lum)
+						sumSq += float64(lum) * float64(lum)
+						count++
+					}
+				}
+			}
+			mean := sum / float64(count)
+			variance := (sumSq / float64(count)) - (mean * mean)
+			stdDev := math.Sqrt(variance)
+			threshold := mean + k*stdDev
+			px := m.At(x, y)
+			lum := color.GrayModel.Convert(px).(color.Gray).Y
+			if float64(lum) > threshold {
+				binaryM.Set(x, y, color.Black)
+			} else {
+				binaryM.Set(x, y, color.White)
+			}
+		}
+	}
+
 	return binaryM
 }

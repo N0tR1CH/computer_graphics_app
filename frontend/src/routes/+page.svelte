@@ -43,7 +43,8 @@
 		HandleHistogram,
 		HandleBinarizeManual,
 		HandleBinarizePercentBlack,
-		HandleBinarizeOtsu
+		HandleBinarizeOtsu,
+		HandleBinarizeNiblack
 	} from '$lib/wailsjs/go/main/App';
 	import { HandleBinarizeMeanIterative } from '$lib/wailsjs/go/main/App';
 
@@ -381,6 +382,7 @@
                         <option value="percentblack">Percent Black selection</option>
                         <option value="meaniterative">Mean iterative selection</option>
                         <option value="otsu">Otsu</option>
+                        <option value="niblack">Niblack</option>
                       </select>
                     </form>
                       `,
@@ -478,6 +480,40 @@
 						return;
 					}
 					shapes[shapes.length - 1].baseUrlImage = baseUrlImage;
+					break;
+				}
+				case 'niblack': {
+					const { value } = await Swal.fire({
+						title: 'Grayness method',
+						html: `
+                        <form class="max-w-sm mx-auto">
+                            <label for="window-size" class="block mb-2 text-sm font-medium text-gray-900 dark:text-black">
+                                Window Size
+                            </label>
+                            <input id="window-size" type="number" min="3" value="0" step="1" />
+                            <label for="k-val" class="block mb-2 text-sm font-medium text-gray-900 dark:text-black">
+                                Value of k
+                            </label>
+                            <input id="k-val" type="number" step="0.01"/>
+                        </form>
+                        `,
+						focusConfirm: false,
+						preConfirm: () => [
+							document.getElementById('window-size').value,
+							document.getElementById('k-val').value
+						]
+					});
+					const baseUrlImage = await HandleBinarizeNiblack(
+						shapes[shapes.length - 1].baseUrlImage,
+						Number(value[0]),
+						Number(value[1])
+					);
+					if (baseUrlImage == '') {
+						console.error('baseUrlImage is empty');
+						return;
+					}
+					shapes[shapes.length - 1].baseUrlImage = baseUrlImage;
+					break;
 				}
 			}
 		}}

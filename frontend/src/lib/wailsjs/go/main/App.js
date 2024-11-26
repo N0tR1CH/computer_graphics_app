@@ -18,6 +18,10 @@ export function HandleBinarizeMeanIterative(arg1, arg2) {
   return window['go']['main']['App']['HandleBinarizeMeanIterative'](arg1, arg2);
 }
 
+export function HandleBinarizeNiblack(arg1, arg2, arg3) {
+  return window['go']['main']['App']['HandleBinarizeNiblack'](arg1, arg2, arg3);
+}
+
 export function HandleBinarizeOtsu(arg1) {
   return window['go']['main']['App']['HandleBinarizeOtsu'](arg1);
 }
