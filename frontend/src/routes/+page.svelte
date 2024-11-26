@@ -45,7 +45,9 @@
 		HandleBinarizePercentBlack,
 		HandleBinarizeOtsu,
 		HandleBinarizeNiblack,
-		HandleBinarizeBernsen
+		HandleBinarizeBernsen,
+		HandleDilation,
+		HandleErosion
 	} from '$lib/wailsjs/go/main/App';
 	import { HandleBinarizeMeanIterative } from '$lib/wailsjs/go/main/App';
 
@@ -554,6 +556,74 @@
 		}}
 	>
 		Binarisation
+	</button>
+
+	<button
+		type="button"
+		class="my-4 mb-2 me-2 w-full rounded-full bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+		on:click={async () => {
+			const { value } = await Swal.fire({
+				title: 'Morphological filters',
+				html: `
+                    <form class="max-w-sm mx-auto">
+                        <label
+                            for="morphological-filters"
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-600"
+                        >
+                            Choose an action
+                        </label>
+                        <select
+                            id="morphological-filters-select"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        >
+                            <option selected value="dilation">
+                                Dilation
+                            </option>
+                            <option value="erosion">
+                                Erosion
+                            </option>
+                            <option value="opening">
+                                Opening
+                            </option>
+                            <option value="closing">
+                                Closing
+                            </option>
+                            <option value="hit-or-miss">
+                                Hit or Miss
+                            </option>
+                        </select>
+                    </form>
+            `,
+				focusConfirm: false,
+				preConfirm: () => document.getElementById('morphological-filters-select').value
+			});
+
+			switch (value) {
+				case 'dilation': {
+					const baseUrlImage = await HandleDilation(shapes[shapes.length - 1].baseUrlImage);
+					if (baseUrlImage == '') {
+						console.error('baseUrlImage is empty');
+						return;
+					}
+					shapes[shapes.length - 1].baseUrlImage = baseUrlImage;
+					break;
+				}
+				case 'erosion': {
+					const baseUrlImage = await HandleErosion(shapes[shapes.length - 1].baseUrlImage);
+					if (baseUrlImage == '') {
+						console.error('baseUrlImage is empty');
+						return;
+					}
+					shapes[shapes.length - 1].baseUrlImage = baseUrlImage;
+					break;
+				}
+				case 'opening':
+				case 'closing':
+				case 'hit-or-miss':
+			}
+		}}
+	>
+		Morphological filters
 	</button>
 {/if}
 

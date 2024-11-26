@@ -34,6 +34,14 @@ export function HandleBinarizePercentBlack(arg1, arg2) {
   return window['go']['main']['App']['HandleBinarizePercentBlack'](arg1, arg2);
 }
 
+export function HandleDilation(arg1) {
+  return window['go']['main']['App']['HandleDilation'](arg1);
+}
+
+export function HandleErosion(arg1) {
+  return window['go']['main']['App']['HandleErosion'](arg1);
+}
+
 export function HandleFilterApplying(arg1) {
   return window['go']['main']['App']['HandleFilterApplying'](arg1);
 }
