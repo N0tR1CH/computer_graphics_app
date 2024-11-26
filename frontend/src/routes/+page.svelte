@@ -47,9 +47,13 @@
 		HandleBinarizeNiblack,
 		HandleBinarizeBernsen,
 		HandleDilation,
-		HandleErosion
+		HandleErosion,
+		HandleOpening,
+		HandleClosing
 	} from '$lib/wailsjs/go/main/App';
 	import { HandleBinarizeMeanIterative } from '$lib/wailsjs/go/main/App';
+	import Layout from './+layout.svelte';
+	import { HandleHitOrMiss } from '$lib/wailsjs/go/main/App';
 
 	window.addEventListener('keydown', (event) => {
 		switch (event.key) {
@@ -617,9 +621,33 @@
 					shapes[shapes.length - 1].baseUrlImage = baseUrlImage;
 					break;
 				}
-				case 'opening':
-				case 'closing':
-				case 'hit-or-miss':
+				case 'opening': {
+					const baseUrlImage = await HandleOpening(shapes[shapes.length - 1].baseUrlImage);
+					if (baseUrlImage == '') {
+						console.error('baseUrlImage is empty');
+						return;
+					}
+					shapes[shapes.length - 1].baseUrlImage = baseUrlImage;
+					break;
+				}
+				case 'closing': {
+					const baseUrlImage = await HandleClosing(shapes[shapes.length - 1].baseUrlImage);
+					if (baseUrlImage == '') {
+						console.error('baseUrlImage is empty');
+						return;
+					}
+					shapes[shapes.length - 1].baseUrlImage = baseUrlImage;
+					break;
+				}
+				case 'hit-or-miss': {
+					const baseUrlImage = await HandleHitOrMiss(shapes[shapes.length - 1].baseUrlImage);
+					if (baseUrlImage == '') {
+						console.error('baseUrlImage is empty');
+						return;
+					}
+					shapes[shapes.length - 1].baseUrlImage = baseUrlImage;
+					break;
+				}
 			}
 		}}
 	>

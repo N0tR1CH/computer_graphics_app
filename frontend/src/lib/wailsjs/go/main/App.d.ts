@@ -18,6 +18,8 @@ export function HandleBinarizeOtsu(arg1:string):Promise<string>;
 
 export function HandleBinarizePercentBlack(arg1:string,arg2:number):Promise<string>;
 
+export function HandleClosing(arg1:string):Promise<string>;
+
 export function HandleDilation(arg1:string):Promise<string>;
 
 export function HandleErosion(arg1:string):Promise<string>;
@@ -25,6 +27,10 @@ export function HandleErosion(arg1:string):Promise<string>;
 export function HandleFilterApplying(arg1:string):Promise<string>;
 
 export function HandleHistogram(arg1:string):Promise<string>;
+
+export function HandleHitOrMiss(arg1:string):Promise<string>;
+
+export function HandleOpening(arg1:string):Promise<string>;
 
 export function HandleRgbPointWiseTransformations(arg1:Array<string>,arg2:string):Promise<string>;
 

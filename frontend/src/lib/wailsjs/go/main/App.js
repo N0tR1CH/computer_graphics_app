@@ -34,6 +34,10 @@ export function HandleBinarizePercentBlack(arg1, arg2) {
   return window['go']['main']['App']['HandleBinarizePercentBlack'](arg1, arg2);
 }
 
+export function HandleClosing(arg1) {
+  return window['go']['main']['App']['HandleClosing'](arg1);
+}
+
 export function HandleDilation(arg1) {
   return window['go']['main']['App']['HandleDilation'](arg1);
 }
@@ -48,6 +52,14 @@ export function HandleFilterApplying(arg1) {
 
 export function HandleHistogram(arg1) {
   return window['go']['main']['App']['HandleHistogram'](arg1);
+}
+
+export function HandleHitOrMiss(arg1) {
+  return window['go']['main']['App']['HandleHitOrMiss'](arg1);
+}
+
+export function HandleOpening(arg1) {
+  return window['go']['main']['App']['HandleOpening'](arg1);
 }
 
 export function HandleRgbPointWiseTransformations(arg1, arg2) {

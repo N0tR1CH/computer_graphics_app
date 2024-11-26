@@ -130,3 +130,78 @@ func erosion(m image.Image) image.Image {
 	}
 	return erodedM
 }
+
+func (a *App) HandleOpening(base64img string) string {
+	m, err := decodeBasePngToImg(base64img, a.ctx)
+	if err != nil {
+		return ""
+	}
+	newM := erosion(m)
+	newM = dilation(m)
+	var buf bytes.Buffer
+	if err := png.Encode(&buf, newM); err != nil {
+		return ""
+	}
+	base64img = base64.StdEncoding.EncodeToString(buf.Bytes())
+	return fmt.Sprintf("data:image/png;base64,%s", base64img)
+}
+
+func (a *App) HandleClosing(base64img string) string {
+	m, err := decodeBasePngToImg(base64img, a.ctx)
+	if err != nil {
+		return ""
+	}
+	newM := dilation(m)
+	newM = erosion(m)
+	var buf bytes.Buffer
+	if err := png.Encode(&buf, newM); err != nil {
+		return ""
+	}
+	base64img = base64.StdEncoding.EncodeToString(buf.Bytes())
+	return fmt.Sprintf("data:image/png;base64,%s", base64img)
+}
+
+func (a *App) HandleHitOrMiss(base64img string) string {
+	complement := func(m image.Image) *image.Gray {
+		bounds := m.Bounds()
+		comp := image.NewGray(bounds)
+		for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
+			for x := bounds.Min.X; x < bounds.Max.X; x++ {
+				val := m.(*image.Gray).GrayAt(x, y).Y
+				comp.SetGray(x, y, color.Gray{Y: 255 - val})
+			}
+		}
+		return comp
+	}
+	intersection := func(m1 image.Image, m2 image.Image) *image.Gray {
+		bounds := m1.Bounds()
+		intersect := image.NewGray(bounds)
+		for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
+			for x := bounds.Min.X; x < bounds.Max.X; x++ {
+				val1 := m1.(*image.Gray).GrayAt(x, y).Y
+				val2 := m2.(*image.Gray).GrayAt(x, y).Y
+				if val1 == 255 && val2 == 255 {
+					intersect.SetGray(x, y, color.Gray{Y: 255})
+				} else {
+					intersect.SetGray(x, y, color.Gray{Y: 0})
+				}
+			}
+		}
+		return intersect
+	}
+
+	m, err := decodeBasePngToImg(base64img, a.ctx)
+	if err != nil {
+		return ""
+	}
+	erodedHit := erosion(m)
+	complementM := complement(erodedHit)
+	erodedMiss := erosion(complementM)
+	finalM := intersection(erodedHit, erodedMiss)
+	var buf bytes.Buffer
+	if err := png.Encode(&buf, finalM); err != nil {
+		return ""
+	}
+	base64img = base64.StdEncoding.EncodeToString(buf.Bytes())
+	return fmt.Sprintf("data:image/png;base64,%s", base64img)
+}
