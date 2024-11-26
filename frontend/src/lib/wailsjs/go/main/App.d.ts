@@ -10,6 +10,8 @@ export function HandleBinarizeManual(arg1:string,arg2:number):Promise<string>;
 
 export function HandleBinarizeMeanIterative(arg1:string,arg2:number):Promise<string>;
 
+export function HandleBinarizeOtsu(arg1:string):Promise<string>;
+
 export function HandleBinarizePercentBlack(arg1:string,arg2:number):Promise<string>;
 
 export function HandleFilterApplying(arg1:string):Promise<string>;

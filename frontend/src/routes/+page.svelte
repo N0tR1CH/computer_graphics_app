@@ -24,6 +24,7 @@
 	import Image from '$lib/components/shapes/image.svelte';
 	import { main } from '$lib/wailsjs/go/models';
 	import Swal from 'sweetalert2';
+	import { fade } from 'svelte/transition';
 
 	type NetPBMimg = {
 		resource: string;
@@ -41,7 +42,8 @@
 		HandleFilterApplying,
 		HandleHistogram,
 		HandleBinarizeManual,
-		HandleBinarizePercentBlack
+		HandleBinarizePercentBlack,
+		HandleBinarizeOtsu
 	} from '$lib/wailsjs/go/main/App';
 	import { HandleBinarizeMeanIterative } from '$lib/wailsjs/go/main/App';
 
@@ -127,7 +129,7 @@
 </p>
 
 {#if activeAction == 'Save'}
-	<div class="mx-auto my-4 max-w-sm">
+	<div class="mx-auto my-4 max-w-sm" transition:fade>
 		<label for="format" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
 			File format options
 		</label>
@@ -145,7 +147,7 @@
 		</select>
 
 		{#if selectedFileFormat != main.ImageFormat.jpg}
-			<div class="my-4">
+			<div class="my-4" transition:fade>
 				<label for="comment" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
 					>Komentarz</label
 				>
@@ -198,7 +200,7 @@
 >
 
 {#if shapes[shapes.length - 1] !== undefined && shapes[shapes.length - 1].baseUrlImage !== ''}
-	<div>
+	<div transition:fade>
 		<button
 			type="button"
 			class="my-4 mb-2 me-2 w-full rounded-full bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
@@ -378,6 +380,7 @@
                         <option selected value="manual">Manual</option>
                         <option value="percentblack">Percent Black selection</option>
                         <option value="meaniterative">Mean iterative selection</option>
+                        <option value="otsu">Otsu</option>
                       </select>
                     </form>
                       `,
@@ -463,6 +466,19 @@
 					}
 					shapes[shapes.length - 1].baseUrlImage = baseUrlImage;
 				}
+				case 'otsu': {
+					if (Number(value) < 0 || Number(value) > 100) {
+						Swal.fire('Maximum number of iterations num must be between 0 and 100');
+						return;
+					}
+
+					const baseUrlImage = await HandleBinarizeOtsu(shapes[shapes.length - 1].baseUrlImage);
+					if (baseUrlImage == '') {
+						console.error('baseUrlImage is empty');
+						return;
+					}
+					shapes[shapes.length - 1].baseUrlImage = baseUrlImage;
+				}
 			}
 		}}
 	>
@@ -482,7 +498,7 @@
 		</thead>
 		<tbody>
 			{#each netpbmImages as netpbmImage}
-				<tr class="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
+				<tr class="border-b bg-white dark:border-gray-700 dark:bg-gray-800" transition:fade>
 					<th
 						scope="row"
 						class="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white"
@@ -576,21 +592,21 @@
 	{/each}
 </Canvas>
 {#if activeAction === 'Move'}
-	<p class="mt-4 text-center text-white">
+	<p class="mt-4 text-center text-white" transition:fade>
 		Current mode is moving elements. Press left click in order to move latest element somewhere else
 		on the canvas.
 	</p>
 {:else if activeAction === 'Resize'}
-	<p class="mt-4 text-center text-white">
+	<p class="mt-4 text-center text-white" transition:fade>
 		Current mode is resizing elements. Press left click in order to scale latest element. If it
 		doesn't do anything that means element is not scalable!
 	</p>
 {:else if activeAction === 'Save'}
-	<p class="mt-4 text-center text-white">
+	<p class="mt-4 text-center text-white" transition:fade>
 		Current mode is saving canvas. Click on the canvas in order to invoke action!
 	</p>
 {:else if activeAction === 'Text'}
-	<p class="mt-4 text-center text-white">
+	<p class="mt-4 text-center text-white" transition:fade>
 		Write text to input field and click on the canvas in order to add it to correct coordinates.
 	</p>
 	<input

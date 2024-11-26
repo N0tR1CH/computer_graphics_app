@@ -182,3 +182,76 @@ func binalizeMeanIterative(m image.Image, maxIterations int) image.Image {
 	}
 	return binaryM
 }
+
+func (a *App) HandleBinarizeOtsu(base64str string) string {
+	m, err := decodeBasePngToImg(base64str, a.ctx)
+	if err != nil {
+		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+			Message: "Failed to decode image",
+		})
+		return ""
+	}
+
+	newM := binarizeOtsu(m)
+	var buf bytes.Buffer
+	if err := png.Encode(&buf, newM); err != nil {
+		return ""
+	}
+
+	base64str = base64.StdEncoding.EncodeToString(buf.Bytes())
+	return fmt.Sprintf("data:image/png;base64,%s", base64str)
+}
+
+func binarizeOtsu(m image.Image) image.Image {
+	b := m.Bounds()
+	histogram := make([]int, 256)
+	for y := 0; y < b.Dy(); y++ {
+		for x := 0; x < b.Dx(); x++ {
+			oldPx := m.At(x, y)
+			lum := color.GrayModel.Convert(oldPx).(color.Gray).Y
+			histogram[lum]++
+		}
+	}
+	totalPixels := b.Dx() * b.Dy()
+	sumTotal := 0
+	for i := 0; i < 256; i++ {
+		sumTotal += i * histogram[i]
+	}
+	sumB := 0
+	wB := 0
+	maxVariance := 0.0
+	threshold := uint8(0)
+
+	for t := 0; t < 256; t++ {
+		wB += histogram[t]
+		if wB == 0 {
+			continue
+		}
+		wF := totalPixels - wB
+		if wF == 0 {
+			break
+		}
+		sumB += t * histogram[t]
+		mB := float64(sumB) / float64(wB)
+		mF := float64(sumTotal-sumB) / float64(wF)
+
+		variance := float64(wB) * float64(wF) * (mB - mF) * (mB - mF)
+		if variance > maxVariance {
+			maxVariance = variance
+			threshold = uint8(t)
+		}
+	}
+	binaryM := image.NewGray(b)
+	for y := 0; y < b.Dy(); y++ {
+		for x := 0; x < b.Dx(); x++ {
+			oldPx := m.At(x, y)
+			lum := color.GrayModel.Convert(oldPx).(color.Gray).Y
+			if lum > threshold {
+				binaryM.Set(x, y, color.Black)
+			} else {
+				binaryM.Set(x, y, color.White)
+			}
+		}
+	}
+	return binaryM
+}
