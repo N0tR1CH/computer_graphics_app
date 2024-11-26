@@ -317,3 +317,85 @@ func binarizeNiblack(m image.Image, windowSize int, k float64) image.Image {
 
 	return binaryM
 }
+
+func (a *App) HandleBinarizeBernsen(
+	base64str string,
+	windowSize int,
+	contrastThreshold uint8,
+) string {
+	m, err := decodeBasePngToImg(base64str, a.ctx)
+	if err != nil {
+		return ""
+	}
+
+	newM := binarizeBernsen(m, windowSize, contrastThreshold)
+	var buf bytes.Buffer
+	if err := png.Encode(&buf, newM); err != nil {
+		return ""
+	}
+
+	base64str = base64.StdEncoding.EncodeToString(buf.Bytes())
+	return fmt.Sprintf("data:image/png;base64,%s", base64str)
+}
+
+func binarizeBernsen(
+	m image.Image,
+	windowVal int,
+	contrastThreshold uint8,
+) image.Image {
+	padding := windowVal / 2
+	b := m.Bounds()
+	binM := image.NewGray(b)
+	minInt := func(a, b int) int {
+		if a > b {
+			return b
+		}
+		return a
+	}
+	maxInt := func(a, b int) int {
+		if a > b {
+			return a
+		}
+		return b
+	}
+
+	for y := 0; y < b.Dy(); y++ {
+		for x := 0; x < b.Dx(); x++ {
+			var (
+				minLum uint8 = 255
+				maxLum uint8 = 0
+			)
+			yMin := maxInt(y-padding, 0)
+			yMax := minInt(y+padding, b.Dy()-1)
+			xMin := maxInt(x-padding, 0)
+			xMax := minInt(x+padding, b.Dx()-1)
+			for winY := yMin; winY <= yMax; winY++ {
+				for winX := xMin; winX <= xMax; winX++ {
+					px := m.At(winX, winY)
+					lum := color.GrayModel.Convert(px).(color.Gray).Y
+					if lum < minLum {
+						minLum = lum
+					}
+					if lum > maxLum {
+						maxLum = lum
+					}
+				}
+			}
+			contrast := maxLum - minLum
+			if contrast >= contrastThreshold {
+				threshold := minLum/2 + maxLum/2
+				px := m.At(x, y)
+				lum := color.GrayModel.Convert(px).(color.Gray).Y
+				if lum < threshold {
+					binM.Set(x, y, color.Black)
+				} else {
+					binM.Set(x, y, color.White)
+				}
+			} else {
+				binM.Set(x, y, color.White)
+			}
+		}
+	}
+
+	return binM
+}

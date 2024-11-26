@@ -10,6 +10,10 @@ export function HandleAlphaPointWiseTransformations(arg1, arg2) {
   return window['go']['main']['App']['HandleAlphaPointWiseTransformations'](arg1, arg2);
 }
 
+export function HandleBinarizeBernsen(arg1, arg2, arg3) {
+  return window['go']['main']['App']['HandleBinarizeBernsen'](arg1, arg2, arg3);
+}
+
 export function HandleBinarizeManual(arg1, arg2) {
   return window['go']['main']['App']['HandleBinarizeManual'](arg1, arg2);
 }

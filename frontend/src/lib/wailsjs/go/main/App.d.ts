@@ -6,6 +6,8 @@ export function CmykToRgb(arg1:number,arg2:number,arg3:number,arg4:number):Promi
 
 export function HandleAlphaPointWiseTransformations(arg1:number,arg2:string):Promise<string>;
 
+export function HandleBinarizeBernsen(arg1:string,arg2:number,arg3:number):Promise<string>;
+
 export function HandleBinarizeManual(arg1:string,arg2:number):Promise<string>;
 
 export function HandleBinarizeMeanIterative(arg1:string,arg2:number):Promise<string>;

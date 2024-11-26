@@ -44,7 +44,8 @@
 		HandleBinarizeManual,
 		HandleBinarizePercentBlack,
 		HandleBinarizeOtsu,
-		HandleBinarizeNiblack
+		HandleBinarizeNiblack,
+		HandleBinarizeBernsen
 	} from '$lib/wailsjs/go/main/App';
 	import { HandleBinarizeMeanIterative } from '$lib/wailsjs/go/main/App';
 
@@ -383,6 +384,7 @@
                         <option value="meaniterative">Mean iterative selection</option>
                         <option value="otsu">Otsu</option>
                         <option value="niblack">Niblack</option>
+                        <option value="bernsen">Bernsen</option>
                       </select>
                     </form>
                       `,
@@ -393,7 +395,7 @@
 			switch (value) {
 				case 'manual': {
 					const { value } = await Swal.fire({
-						title: 'Grayness method',
+						title: 'Manual method',
 						html: `
                         <form class="max-w-sm mx-auto">
                             <label for="colors" class="block mb-2 text-sm font-medium text-gray-900 dark:text-black">Threshold</label>
@@ -416,7 +418,7 @@
 
 				case 'percentblack': {
 					const { value } = await Swal.fire({
-						title: 'Grayness method',
+						title: 'Percent black',
 						html: `
                         <form class="max-w-sm mx-auto">
                             <label for="colors" class="block mb-2 text-sm font-medium text-gray-900 dark:text-black">
@@ -440,7 +442,7 @@
 				}
 				case 'meaniterative': {
 					const { value } = await Swal.fire({
-						title: 'Grayness method',
+						title: 'Iterative mean',
 						html: `
                         <form class="max-w-sm mx-auto">
                             <label for="colors" class="block mb-2 text-sm font-medium text-gray-900 dark:text-black">
@@ -484,7 +486,7 @@
 				}
 				case 'niblack': {
 					const { value } = await Swal.fire({
-						title: 'Grayness method',
+						title: 'Niblack',
 						html: `
                         <form class="max-w-sm mx-auto">
                             <label for="window-size" class="block mb-2 text-sm font-medium text-gray-900 dark:text-black">
@@ -494,7 +496,7 @@
                             <label for="k-val" class="block mb-2 text-sm font-medium text-gray-900 dark:text-black">
                                 Value of k
                             </label>
-                            <input id="k-val" type="number" step="0.01"/>
+                            <input id="k-val" type="number" step="1"/>
                         </form>
                         `,
 						focusConfirm: false,
@@ -504,6 +506,39 @@
 						]
 					});
 					const baseUrlImage = await HandleBinarizeNiblack(
+						shapes[shapes.length - 1].baseUrlImage,
+						Number(value[0]),
+						Number(value[1])
+					);
+					if (baseUrlImage == '') {
+						console.error('baseUrlImage is empty');
+						return;
+					}
+					shapes[shapes.length - 1].baseUrlImage = baseUrlImage;
+					break;
+				}
+				case 'bernsen': {
+					const { value } = await Swal.fire({
+						title: 'Grayness method',
+						html: `
+                        <form class="max-w-sm mx-auto">
+                            <label for="window-size" class="block mb-2 text-sm font-medium text-gray-900 dark:text-black">
+                                Window Size
+                            </label>
+                            <input id="window-size" type="number" min="3" value="0" step="1" />
+                            <label for="contrast" class="block mb-2 text-sm font-medium text-gray-900 dark:text-black">
+                                Contrast value
+                            </label>
+                            <input id="contrast" type="number" step="0.01"/>
+                        </form>
+                        `,
+						focusConfirm: false,
+						preConfirm: () => [
+							document.getElementById('window-size').value,
+							document.getElementById('contrast').value
+						]
+					});
+					const baseUrlImage = await HandleBinarizeBernsen(
 						shapes[shapes.length - 1].baseUrlImage,
 						Number(value[0]),
 						Number(value[1])
