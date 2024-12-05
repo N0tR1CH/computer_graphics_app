@@ -57,6 +57,7 @@
 	import BezierCurve from '$lib/components/shapes/bezier_curve.svelte';
 	import TimelineOutline from '$lib/components/outlines/timeline_outline.svelte';
 	import QuadraticCurve from '$lib/components/shapes/quadratic_curve.svelte';
+	import DotsOutline from '$lib/components/outlines/dots_outline.svelte';
 
 	window.addEventListener('keydown', (event) => {
 		switch (event.key) {
@@ -136,6 +137,9 @@
 	</ToolBarButton>
 	<ToolBarButton bind:activeAction action={'QuadraticCurve'}>
 		<CurveOutline {activeAction} />
+	</ToolBarButton>
+	<ToolBarButton bind:activeAction action={'Polygon'}>
+		<DotsOutline {activeAction} />
 	</ToolBarButton>
 </ToolBar>
 
