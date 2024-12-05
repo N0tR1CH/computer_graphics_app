@@ -763,6 +763,7 @@
 			<Image x={shape.x} y={shape.y} baseUrlImage={shape.baseUrlImage} />
 		{:else if shape.name === 'Bezier'}
 			<BezierCurve
+				hexColor={shape.hexColor}
 				start={shape.bezierStart}
 				cp1={shape.bezierCp1}
 				cp2={shape.bezierCp2}
@@ -771,6 +772,7 @@
 		{/if}
 	{/each}
 </Canvas>
+
 {#if activeAction === 'Move'}
 	<p class="mt-4 text-center text-white" transition:fade>
 		Current mode is moving elements. Press left click in order to move latest element somewhere else
@@ -794,7 +796,101 @@
 		bind:value={text}
 		type="text"
 	/>
+{:else if activeAction === 'Bezier' && shapes[shapes.length - 1]?.name === 'Bezier'}
+	<div>
+		<div>
+			<div>
+				<label
+					for="small-input"
+					class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">START</label
+				>
+				<div class="flex gap-x-2">
+					<input
+						bind:value={shapes[shapes.length - 1].bezierStart.x}
+						type="number"
+						id="small-input"
+						class="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+					/>
+					<input
+						bind:value={shapes[shapes.length - 1].bezierStart.y}
+						type="number"
+						id="small-input"
+						class="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+					/>
+				</div>
+			</div>
+
+			<div>
+				<label
+					for="small-input"
+					class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">END</label
+				>
+				<div class="flex gap-x-2">
+					<input
+						bind:value={shapes[shapes.length - 1].bezierEnd.x}
+						type="number"
+						id="small-input"
+						class="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+					/>
+					<input
+						bind:value={shapes[shapes.length - 1].bezierEnd.y}
+						type="number"
+						id="small-input"
+						class="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+					/>
+				</div>
+			</div>
+
+			<div>
+				<label
+					for="small-input"
+					class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+					>CONTROL POINT 1</label
+				>
+				<div class="flex gap-x-2">
+					<input
+						bind:value={shapes[shapes.length - 1].bezierCp1.x}
+						on:change={() => {
+							shapes = [...shapes];
+						}}
+						type="number"
+						id="small-input"
+						class="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+					/>
+					<input
+						bind:value={shapes[shapes.length - 1].bezierCp1.y}
+						type="number"
+						id="small-input"
+						class="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+					/>
+				</div>
+			</div>
+
+			<div>
+				<label
+					for="small-input"
+					class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+					>CONTROL POINT 2</label
+				>
+				<div class="flex gap-x-2">
+					<input
+						bind:value={shapes[shapes.length - 1].bezierCp2.x}
+						type="number"
+						id="small-input"
+						class="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+					/>
+					<input
+						bind:value={shapes[shapes.length - 1].bezierCp2.y}
+						type="number"
+						id="small-input"
+						class="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+					/>
+				</div>
+			</div>
+		</div>
+	</div>
 {/if}
+
 <ColorPickers></ColorPickers>
 {#key sceneWidth + sceneHeight}
 	<ThirdDimensionCanvas bind:shapes width={sceneWidth} height={sceneHeight}></ThirdDimensionCanvas>
