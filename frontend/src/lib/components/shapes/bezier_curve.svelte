@@ -36,6 +36,7 @@
 			ctx.beginPath();
 			ctx.moveTo(start.x, start.y);
 			ctx.bezierCurveTo(cp1.x, cp1.y, cp2.x, cp2.y, end.x, end.y);
+			ctx.strokeStyle = hexColor;
 			ctx.stroke();
 
 			// Start and end points

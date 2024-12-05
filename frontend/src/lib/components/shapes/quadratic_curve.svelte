@@ -32,6 +32,7 @@
 			ctx.beginPath();
 			ctx.moveTo(start.x, start.y);
 			ctx.quadraticCurveTo(cp.x, cp.y, end.x, end.y);
+			ctx.strokeStyle = hexColor;
 			ctx.stroke();
 
 			// Start and end points
