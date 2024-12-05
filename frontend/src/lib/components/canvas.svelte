@@ -24,6 +24,25 @@
 	let isLive = false;
 	let isPencil = false;
 
+	function calculateControlPoints(
+		start: { x: number; y: number },
+		end: { x: number; y: number },
+		offsetX: number,
+		offsetY: number
+	) {
+		const cp1 = {
+			x: start.x + offsetX,
+			y: start.y + offsetY
+		};
+
+		const cp2 = {
+			x: end.x - offsetX,
+			y: end.y - offsetY
+		};
+
+		return { cp1, cp2 };
+	}
+
 	function drawing() {
 		if (isDrawing && !isLive) {
 			isLive = true;
@@ -41,6 +60,9 @@
 					break;
 				case 'StraightLine':
 					newShapeName = 'StraightLine';
+					break;
+				case 'Bezier':
+					newShapeName = 'Bezier';
 					break;
 				default:
 					newShapeName = '';
@@ -66,9 +88,28 @@
 					y1: 0,
 					text: '',
 					hexColor: $currentColor,
-					baseUrlImage: ''
+					baseUrlImage: '',
+					bezierStart: { x: cursorPosition.x, y: cursorPosition.y },
+					bezierCp1: { x: 0, y: 0 },
+					bezierCp2: { x: 0, y: 0 },
+					bezierEnd: { x: 0, y: 0 }
 				}
 			];
+
+			if (activeAction === 'Bezier') {
+				const endPoint = { x: cursorPosition.x + 100, y: cursorPosition.y + 100 }; // Example end point
+				const offsetX = 50;
+				const offsetY = 50;
+				const controlPoints = calculateControlPoints(
+					shapes[shapes.length - 1].bezierStart,
+					endPoint,
+					offsetX,
+					offsetY
+				);
+				shapes[shapes.length - 1].bezierCp1 = controlPoints.cp1;
+				shapes[shapes.length - 1].bezierCp2 = controlPoints.cp2;
+				shapes[shapes.length - 1].bezierEnd = endPoint;
+			}
 		} else {
 			isLive = false;
 			shapes = [...shapes];
@@ -152,6 +193,25 @@
 			);
 		};
 
+		const bezierCurveAction = () => {
+			const lastShape = shapes[shapes.length - 1];
+			if (lastShape.name !== 'Bezier') return;
+
+			const endPoint = { x: cursorPosition.x, y: cursorPosition.y };
+			const offsetX = 50;
+			const offsetY = 50;
+
+			const controlPoints = calculateControlPoints(
+				lastShape.bezierStart,
+				endPoint,
+				offsetX,
+				offsetY
+			);
+			lastShape.bezierCp1 = controlPoints.cp1;
+			lastShape.bezierCp2 = controlPoints.cp2;
+			lastShape.bezierEnd = endPoint;
+		};
+
 		switch (activeAction) {
 			case 'Rectangle': {
 				rectangleAction();
@@ -163,6 +223,10 @@
 			}
 			case 'Circle': {
 				circleAction();
+				break;
+			}
+			case 'Bezier': {
+				bezierCurveAction();
 				break;
 			}
 			case 'Move': {

@@ -52,8 +52,9 @@
 		HandleClosing
 	} from '$lib/wailsjs/go/main/App';
 	import { HandleBinarizeMeanIterative } from '$lib/wailsjs/go/main/App';
-	import Layout from './+layout.svelte';
 	import { HandleHitOrMiss } from '$lib/wailsjs/go/main/App';
+	import BezierCurve from '$lib/components/shapes/bezier_curve.svelte';
+	import TimelineOutline from '$lib/components/outlines/timeline_outline.svelte';
 
 	window.addEventListener('keydown', (event) => {
 		switch (event.key) {
@@ -129,6 +130,9 @@
 	</ToolBarButton>
 	<ToolBarButton bind:activeAction action={'Text'}>
 		<TextOutline {activeAction} />
+	</ToolBarButton>
+	<ToolBarButton bind:activeAction action={'Bezier'}>
+		<TimelineOutline {activeAction} />
 	</ToolBarButton>
 </ToolBar>
 
@@ -757,6 +761,13 @@
 			<Text x={shape.x} y={shape.y} text={shape.text} hexColor={shape.hexColor} />
 		{:else if shape.name === 'Image'}
 			<Image x={shape.x} y={shape.y} baseUrlImage={shape.baseUrlImage} />
+		{:else if shape.name === 'Bezier'}
+			<BezierCurve
+				start={shape.bezierStart}
+				cp1={shape.bezierCp1}
+				cp2={shape.bezierCp2}
+				end={shape.bezierEnd}
+			/>
 		{/if}
 	{/each}
 </Canvas>
