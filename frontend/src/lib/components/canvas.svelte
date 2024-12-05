@@ -24,6 +24,13 @@
 	let isLive = false;
 	let isPencil = false;
 
+	/* Start of Moving bezier state */
+	let isMovingStart: boolean = false;
+	let isMovingEnd: boolean = false;
+	let isMovingCp1: boolean = false;
+	let isMovingCp2: boolean = false;
+	/* End of Moving bezier state */
+
 	function calculateControlPoints(
 		start: { x: number; y: number },
 		end: { x: number; y: number },
@@ -230,8 +237,24 @@
 				break;
 			}
 			case 'Move': {
-				if (cursorPosition.x) shapes[shapes.length - 1].x = cursorPosition.x;
+				shapes[shapes.length - 1].x = cursorPosition.x;
 				shapes[shapes.length - 1].y = cursorPosition.y;
+
+				if (shapes[shapes.length - 1].name == 'Bezier') {
+					if (isMovingStart) {
+						shapes[shapes.length - 1].bezierStart.x = cursorPosition.x;
+						shapes[shapes.length - 1].bezierStart.y = cursorPosition.y;
+					} else if (isMovingEnd) {
+						shapes[shapes.length - 1].bezierEnd.x = cursorPosition.x;
+						shapes[shapes.length - 1].bezierEnd.y = cursorPosition.y;
+					} else if (isMovingCp1) {
+						shapes[shapes.length - 1].bezierCp1.x = cursorPosition.x;
+						shapes[shapes.length - 1].bezierCp1.y = cursorPosition.y;
+					} else if (isMovingCp2) {
+						shapes[shapes.length - 1].bezierCp2.x = cursorPosition.x;
+						shapes[shapes.length - 1].bezierCp2.y = cursorPosition.y;
+					}
+				}
 				break;
 			}
 			case 'Resize': {
@@ -349,6 +372,30 @@
 
 		console.log('Mouse pressed');
 		if (activeAction === 'Move' || activeAction === 'Resize') {
+			const s = shapes[shapes.length - 1];
+			if (s.name === 'Bezier') {
+				if (
+					Math.abs(s.bezierStart.x - cursorPosition.x) < 5 &&
+					Math.abs(s.bezierStart.y - cursorPosition.y) < 5
+				) {
+					isMovingStart = true;
+				} else if (
+					Math.abs(s.bezierEnd.x - cursorPosition.x) < 5 &&
+					Math.abs(s.bezierEnd.y - cursorPosition.y) < 5
+				) {
+					isMovingEnd = true;
+				} else if (
+					Math.abs(s.bezierCp1.x - cursorPosition.x) < 5 &&
+					Math.abs(s.bezierCp1.y - cursorPosition.y) < 5
+				) {
+					isMovingCp1 = true;
+				} else if (
+					Math.abs(s.bezierCp2.x - cursorPosition.x) < 5 &&
+					Math.abs(s.bezierCp2.y - cursorPosition.y) < 5
+				) {
+					isMovingCp2 = true;
+				}
+			}
 			isLive = true;
 			return;
 		}
@@ -367,6 +414,11 @@
 		drawing();
 	}}
 	on:mouseup={() => {
+		isMovingStart = false;
+		isMovingEnd = false;
+		isMovingCp1 = false;
+		isMovingCp2 = false;
+
 		if (activeAction === 'Text') {
 			return;
 		}
