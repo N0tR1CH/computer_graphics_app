@@ -11,6 +11,7 @@
 	import PencilOutline from '$lib/components/outlines/pencil_outline.svelte';
 	import SaveOutline from '$lib/components/outlines/save_outline.svelte';
 	import TextOutline from '$lib/components/outlines/text_outline.svelte';
+	import CurveOutline from '$lib/components/outlines/curve_outline.svelte';
 	import Canvas from '$lib/components/canvas.svelte';
 	import Rectangle from '$lib/components/shapes/rectangle.svelte';
 	import Triangle from '$lib/components/shapes/triangle.svelte';
@@ -55,13 +56,12 @@
 	import { HandleHitOrMiss } from '$lib/wailsjs/go/main/App';
 	import BezierCurve from '$lib/components/shapes/bezier_curve.svelte';
 	import TimelineOutline from '$lib/components/outlines/timeline_outline.svelte';
+	import QuadraticCurve from '$lib/components/shapes/quadratic_curve.svelte';
 
 	window.addEventListener('keydown', (event) => {
 		switch (event.key) {
 			case 'ArrowLeft':
-				if (shapes.length > 0) {
-					shapes[shapes.length - 1].x = shapes[shapes.length - 1].x - 5;
-				}
+				shapes[shapes.length - 1].x = shapes[shapes.length - 1].x - 5;
 				console.log('Left pressed');
 				break;
 			case 'ArrowRight':
@@ -133,6 +133,9 @@
 	</ToolBarButton>
 	<ToolBarButton bind:activeAction action={'Bezier'}>
 		<TimelineOutline {activeAction} />
+	</ToolBarButton>
+	<ToolBarButton bind:activeAction action={'QuadraticCurve'}>
+		<CurveOutline {activeAction} />
 	</ToolBarButton>
 </ToolBar>
 
@@ -767,6 +770,13 @@
 				start={shape.bezierStart}
 				cp1={shape.bezierCp1}
 				cp2={shape.bezierCp2}
+				end={shape.bezierEnd}
+			/>
+		{:else if shape.name === 'QuadraticCurve'}
+			<QuadraticCurve
+				hexColor={shape.hexColor}
+				start={shape.bezierStart}
+				cp={shape.bezierCp1}
 				end={shape.bezierEnd}
 			/>
 		{/if}

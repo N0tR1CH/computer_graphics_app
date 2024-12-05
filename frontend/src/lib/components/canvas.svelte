@@ -71,6 +71,9 @@
 				case 'Bezier':
 					newShapeName = 'Bezier';
 					break;
+				case 'QuadraticCurve':
+					newShapeName = 'QuadraticCurve';
+					break;
 				default:
 					newShapeName = '';
 			}
@@ -115,6 +118,16 @@
 				);
 				shapes[shapes.length - 1].bezierCp1 = controlPoints.cp1;
 				shapes[shapes.length - 1].bezierCp2 = controlPoints.cp2;
+				shapes[shapes.length - 1].bezierEnd = endPoint;
+			}
+
+			if (activeAction === 'QuadraticCurve') {
+				const endPoint = { x: cursorPosition.x + 100, y: cursorPosition.y + 100 }; // Example end point
+				const startP = shapes[shapes.length - 1].bezierStart;
+				let controlX = 0.5 * startP.x + 0.5 * endPoint.x;
+				let controlY = 0.5 * startP.y + 0.5 * endPoint.y;
+
+				shapes[shapes.length - 1].bezierCp1 = { x: controlX, y: controlY };
 				shapes[shapes.length - 1].bezierEnd = endPoint;
 			}
 		} else {
@@ -253,6 +266,19 @@
 					} else if (isMovingCp2) {
 						shapes[shapes.length - 1].bezierCp2.x = cursorPosition.x;
 						shapes[shapes.length - 1].bezierCp2.y = cursorPosition.y;
+					}
+				}
+
+				if (shapes[shapes.length - 1].name == 'QuadraticCurve') {
+					if (isMovingStart) {
+						shapes[shapes.length - 1].bezierStart.x = cursorPosition.x;
+						shapes[shapes.length - 1].bezierStart.y = cursorPosition.y;
+					} else if (isMovingEnd) {
+						shapes[shapes.length - 1].bezierEnd.x = cursorPosition.x;
+						shapes[shapes.length - 1].bezierEnd.y = cursorPosition.y;
+					} else if (isMovingCp1) {
+						shapes[shapes.length - 1].bezierCp1.x = cursorPosition.x;
+						shapes[shapes.length - 1].bezierCp1.y = cursorPosition.y;
 					}
 				}
 				break;
@@ -396,6 +422,25 @@
 					isMovingCp2 = true;
 				}
 			}
+
+			if (s.name === 'QuadraticCurve') {
+				if (
+					Math.abs(s.bezierStart.x - cursorPosition.x) < 5 &&
+					Math.abs(s.bezierStart.y - cursorPosition.y) < 5
+				) {
+					isMovingStart = true;
+				} else if (
+					Math.abs(s.bezierEnd.x - cursorPosition.x) < 5 &&
+					Math.abs(s.bezierEnd.y - cursorPosition.y) < 5
+				) {
+					isMovingEnd = true;
+				} else if (
+					Math.abs(s.bezierCp1.x - cursorPosition.x) < 5 &&
+					Math.abs(s.bezierCp1.y - cursorPosition.y) < 5
+				) {
+					isMovingCp1 = true;
+				}
+			}
 			isLive = true;
 			return;
 		}
@@ -437,7 +482,7 @@
 		}
 
 		isDrawing = false;
-		if (['Triangle', 'Rectangle', 'Ellipse'].includes(shapes[shapes.length - 1].name)) {
+		if (['Triangle', 'Rectangle', 'Ellipse', 'Bezier'].includes(shapes[shapes.length - 1].name)) {
 			activeAction = 'Move';
 		}
 		drawing();

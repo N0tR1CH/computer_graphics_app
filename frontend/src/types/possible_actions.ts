@@ -8,4 +8,5 @@ export type PossibleActions =
     | 'Pencil'
     | 'Save'
     | 'Bezier'
+    | 'QuadraticCurve'
     | 'Text';
