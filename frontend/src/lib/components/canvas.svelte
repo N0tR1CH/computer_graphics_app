@@ -482,7 +482,7 @@
 		}
 
 		isDrawing = false;
-		if (['Triangle', 'Rectangle', 'Ellipse', 'Bezier'].includes(shapes[shapes.length - 1].name)) {
+		if (['Triangle', 'Rectangle', 'Ellipse'].includes(shapes[shapes.length - 1].name)) {
 			activeAction = 'Move';
 		}
 		drawing();
