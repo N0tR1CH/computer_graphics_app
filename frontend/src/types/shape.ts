@@ -37,4 +37,8 @@ export type Shape = {
     bezierCp1: { x: number, y: number };
     bezierCp2: { x: number, y: number };
     bezierEnd: { x: number, y: number };
+    /* Polygon
+    *   - points
+    */
+    points: { x: number, y: number, isBeingModified: boolean }[];
 };

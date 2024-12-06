@@ -74,6 +74,9 @@
 				case 'QuadraticCurve':
 					newShapeName = 'QuadraticCurve';
 					break;
+				case 'Polygon':
+					newShapeName = 'Polygon';
+					break;
 				default:
 					newShapeName = '';
 			}
@@ -102,7 +105,8 @@
 					bezierStart: { x: cursorPosition.x, y: cursorPosition.y },
 					bezierCp1: { x: 0, y: 0 },
 					bezierCp2: { x: 0, y: 0 },
-					bezierEnd: { x: 0, y: 0 }
+					bezierEnd: { x: 0, y: 0 },
+					points: [{ x: cursorPosition.x, y: cursorPosition.y, isBeingModified: false }]
 				}
 			];
 
@@ -129,6 +133,28 @@
 
 				shapes[shapes.length - 1].bezierCp1 = { x: controlX, y: controlY };
 				shapes[shapes.length - 1].bezierEnd = endPoint;
+			}
+
+			if (activeAction === 'Polygon') {
+				// First basic polygonal shape that user can modify next up to
+				// HIS STANDARDS BECAUSE CLIENT IS ALL THAT MATTERS SIGNED MR BEZOS
+				const center = shapes[shapes.length - 1].points[0];
+
+				// LLM SHIT START HERE
+				const radius = 100;
+				const numSides = 5;
+				const angleOffset = -Math.PI / 2;
+				const newPoints = Array.from({ length: numSides }, (_, i) => {
+					const angle = ((2 * Math.PI) / numSides) * i + angleOffset;
+					return {
+						x: center.x + radius * Math.cos(angle),
+						y: center.y + radius * Math.sin(angle),
+						isBeingModified: false
+					};
+				});
+				// LLM SHIT END HERE
+
+				shapes[shapes.length - 1].points = newPoints;
 			}
 		} else {
 			isLive = false;

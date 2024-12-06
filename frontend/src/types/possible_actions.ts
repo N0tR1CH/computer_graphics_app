@@ -9,4 +9,5 @@ export type PossibleActions =
     | 'Save'
     | 'Bezier'
     | 'QuadraticCurve'
+    | 'Polygon'
     | 'Text';

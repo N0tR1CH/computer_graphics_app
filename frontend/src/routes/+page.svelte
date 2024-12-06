@@ -58,6 +58,7 @@
 	import TimelineOutline from '$lib/components/outlines/timeline_outline.svelte';
 	import QuadraticCurve from '$lib/components/shapes/quadratic_curve.svelte';
 	import DotsOutline from '$lib/components/outlines/dots_outline.svelte';
+	import Polygon from '$lib/components/shapes/polygon.svelte';
 
 	window.addEventListener('keydown', (event) => {
 		switch (event.key) {
@@ -86,6 +87,13 @@
 	let shapes: Shape[] = [];
 	let sceneWidth: number = 350;
 	let sceneHeight: number = 350;
+
+	let kutasy = [
+		{ x: 50, y: 50, isBeingModified: false },
+		{ x: 100, y: 50, isBeingModified: false },
+		{ x: 50, y: 100, isBeingModified: false },
+		{ x: 0, y: 90, isBeingModified: false }
+	];
 
 	let fileFormats: main.ImageFormat[] = [
 		main.ImageFormat.jpg,
@@ -783,6 +791,8 @@
 				cp={shape.bezierCp1}
 				end={shape.bezierEnd}
 			/>
+		{:else if shape.name === 'Polygon'}
+			<Polygon hexColor={shape.hexColor} points={shape.points} />
 		{/if}
 	{/each}
 </Canvas>
@@ -810,6 +820,38 @@
 		bind:value={text}
 		type="text"
 	/>
+{:else if shapes.length > 0 && shapes[shapes.length - 1].name === 'Polygon'}
+	<h2 class="text-white text-xl text-center">Polygon options</h2>
+	<button
+		type="button"
+		class="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+		on:click={() => {
+			shapes[shapes.length - 1].points = [
+				...shapes[shapes.length - 1].points,
+				{ x: 50, y: 50, isBeingModified: false }
+			];
+		}}
+	>
+		Add Vertice
+	</button>
+	{#each shapes[shapes.length - 1].points as point}
+		<div class="flex gap-x-2">
+			<label for="" class="text-white">X</label>
+			<input
+				bind:value={point.x}
+				type="number"
+				id="small-input"
+				class="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+			/>
+			<label for="" class="text-white">Y</label>
+			<input
+				bind:value={point.y}
+				type="number"
+				id="small-input"
+				class="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+			/>
+		</div>
+	{/each}
 {:else if (activeAction === 'Bezier' && shapes[shapes.length - 1]?.name === 'Bezier') || (activeAction === 'QuadraticCurve' && shapes[shapes.length - 1]?.name === 'QuadraticCurve')}
 	<div>
 		<div class="my-4">
