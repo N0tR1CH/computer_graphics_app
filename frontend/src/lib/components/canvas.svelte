@@ -106,7 +106,8 @@
 					bezierCp1: { x: 0, y: 0 },
 					bezierCp2: { x: 0, y: 0 },
 					bezierEnd: { x: 0, y: 0 },
-					points: [{ x: cursorPosition.x, y: cursorPosition.y, isBeingModified: false }]
+					points: [{ x: cursorPosition.x, y: cursorPosition.y, isBeingModified: false }],
+					rotationDegrees: 0
 				}
 			];
 
@@ -139,7 +140,6 @@
 				// First basic polygonal shape that user can modify next up to
 				// HIS STANDARDS BECAUSE CLIENT IS ALL THAT MATTERS SIGNED MR BEZOS
 				const center = shapes[shapes.length - 1].points[0];
-
 				// LLM SHIT START HERE
 				const radius = 100;
 				const numSides = 5;

@@ -88,13 +88,6 @@
 	let sceneWidth: number = 350;
 	let sceneHeight: number = 350;
 
-	let kutasy = [
-		{ x: 50, y: 50, isBeingModified: false },
-		{ x: 100, y: 50, isBeingModified: false },
-		{ x: 50, y: 100, isBeingModified: false },
-		{ x: 0, y: 90, isBeingModified: false }
-	];
-
 	let fileFormats: main.ImageFormat[] = [
 		main.ImageFormat.jpg,
 		main.ImageFormat.pbmP1,
@@ -792,7 +785,11 @@
 				end={shape.bezierEnd}
 			/>
 		{:else if shape.name === 'Polygon'}
-			<Polygon hexColor={shape.hexColor} points={shape.points} />
+			<Polygon
+				hexColor={shape.hexColor}
+				points={shape.points}
+				rotationDegrees={shape.rotationDegrees}
+			/>
 		{/if}
 	{/each}
 </Canvas>
@@ -834,6 +831,17 @@
 	>
 		Add Vertice
 	</button>
+	<div>
+		<label for="" class="text-white">Rotation Degrees</label>
+		<input
+			type="number"
+			id="small-input"
+			min="0"
+			max="360"
+			bind:value={shapes[shapes.length - 1].rotationDegrees}
+			class="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+		/>
+	</div>
 	{#each shapes[shapes.length - 1].points as point}
 		<div class="flex gap-x-2">
 			<label for="" class="text-white">X</label>
