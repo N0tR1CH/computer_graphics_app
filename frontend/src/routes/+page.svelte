@@ -432,6 +432,7 @@
 						return;
 					}
 					shapes[shapes.length - 1].baseUrlImage = baseUrlImage;
+					break;
 				}
 
 				case 'percentblack': {
@@ -457,6 +458,7 @@
 						return;
 					}
 					shapes[shapes.length - 1].baseUrlImage = baseUrlImage;
+					break;
 				}
 				case 'meaniterative': {
 					const { value } = await Swal.fire({
@@ -487,6 +489,7 @@
 						return;
 					}
 					shapes[shapes.length - 1].baseUrlImage = baseUrlImage;
+					break;
 				}
 				case 'otsu': {
 					if (Number(value) < 0 || Number(value) > 100) {
