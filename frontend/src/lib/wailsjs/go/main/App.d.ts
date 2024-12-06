@@ -26,6 +26,8 @@ export function HandleErosion(arg1:string):Promise<string>;
 
 export function HandleFilterApplying(arg1:string):Promise<string>;
 
+export function HandleGrassTask(arg1:string,arg2:number):Promise<string>;
+
 export function HandleHistogram(arg1:string):Promise<string>;
 
 export function HandleHitOrMiss(arg1:string):Promise<string>;
