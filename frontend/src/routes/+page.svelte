@@ -59,6 +59,7 @@
 	import QuadraticCurve from '$lib/components/shapes/quadratic_curve.svelte';
 	import DotsOutline from '$lib/components/outlines/dots_outline.svelte';
 	import Polygon from '$lib/components/shapes/polygon.svelte';
+	import { json } from '@sveltejs/kit';
 
 	window.addEventListener('keydown', (event) => {
 		switch (event.key) {
@@ -726,6 +727,46 @@
 			{/each}
 		</tbody>
 	</table>
+</div>
+
+<div class="flex justify-center">
+	<button
+		type="button"
+		class="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+		on:click={async () => {
+			const text = JSON.stringify(shapes, null, 2);
+			Swal.fire({
+				text: text
+			});
+		}}>Figures to json</button
+	>
+	<button
+		type="button"
+		class="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+		on:click={async () => {
+			const { value: text } = await Swal.fire({
+				input: 'textarea',
+				inputLabel: 'JSON',
+				inputPlaceholder: 'Type your json here...',
+				inputAttributes: {
+					'aria-label': 'Type your message here'
+				},
+				showCancelButton: true
+			});
+			if (text) {
+				try {
+					const jsonShapes = JSON.parse(text);
+					shapes = [...jsonShapes];
+				} catch {
+					Swal.fire({
+						icon: 'error',
+						title: 'Oops...',
+						text: 'This is not a valid json!'
+					});
+				}
+			}
+		}}>Figures from json</button
+	>
 </div>
 
 <Canvas
