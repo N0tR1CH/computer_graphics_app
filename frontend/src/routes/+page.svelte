@@ -59,7 +59,6 @@
 	import QuadraticCurve from '$lib/components/shapes/quadratic_curve.svelte';
 	import DotsOutline from '$lib/components/outlines/dots_outline.svelte';
 	import Polygon from '$lib/components/shapes/polygon.svelte';
-	import { json } from '@sveltejs/kit';
 
 	window.addEventListener('keydown', (event) => {
 		switch (event.key) {
