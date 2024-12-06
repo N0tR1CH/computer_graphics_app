@@ -107,7 +107,8 @@
 					bezierCp2: { x: 0, y: 0 },
 					bezierEnd: { x: 0, y: 0 },
 					points: [{ x: cursorPosition.x, y: cursorPosition.y, isBeingModified: false }],
-					rotationDegrees: 0
+					rotationDegrees: 0,
+					scale: 1
 				}
 			];
 
@@ -307,6 +308,16 @@
 						shapes[shapes.length - 1].bezierCp1.y = cursorPosition.y;
 					}
 				}
+
+				if (shapes[shapes.length - 1].name === 'Polygon') {
+					for (let i = 0; i < shapes[shapes.length - 1].points.length; i++) {
+						if (shapes[shapes.length - 1].points[i].isBeingModified) {
+							shapes[shapes.length - 1].points[i].x = cursorPosition.x;
+							shapes[shapes.length - 1].points[i].y = cursorPosition.y;
+						}
+					}
+				}
+
 				break;
 			}
 			case 'Resize': {
@@ -467,6 +478,18 @@
 					isMovingCp1 = true;
 				}
 			}
+
+			if (s.name === 'Polygon') {
+				for (let i = 0; i < s.points.length; i++) {
+					if (
+						Math.abs(s.points[i].x - cursorPosition.x) < 5 &&
+						Math.abs(s.points[i].y - cursorPosition.y) < 5
+					) {
+						s.points[i].isBeingModified = true;
+					}
+				}
+			}
+
 			isLive = true;
 			return;
 		}
@@ -489,6 +512,10 @@
 		isMovingEnd = false;
 		isMovingCp1 = false;
 		isMovingCp2 = false;
+
+		for (let i = 0; i < shapes[shapes.length - 1].points.length; i++) {
+			shapes[shapes.length - 1].points[i].isBeingModified = false;
+		}
 
 		if (activeAction === 'Text') {
 			return;

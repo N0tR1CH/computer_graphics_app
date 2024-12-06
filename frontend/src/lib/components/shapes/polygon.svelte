@@ -5,6 +5,7 @@
 	export let points: { x: number; y: number; isBeingModified: boolean }[];
 	export let hexColor: string;
 	export let rotationDegrees: number = 0;
+	export let scale: number = 2;
 
 	type CanvasContext = {
 		registerDrawFunction: (fn: DrawFunction) => () => void;
@@ -39,6 +40,7 @@
 	function rotatePoint(
 		point: { x: number; y: number },
 		center: { x: number; y: number },
+		isBeingModified: boolean,
 		angle: number
 	) {
 		const sin = Math.sin(angle);
@@ -49,7 +51,26 @@
 		const yNew = x * sin + y * cos;
 		return {
 			x: xNew + center.x,
-			y: yNew + center.y
+			y: yNew + center.y,
+			isBeingModified: isBeingModified
+		};
+	}
+
+	function scalePoint(
+		point: { x: number; y: number },
+		center: { x: number; y: number },
+		isBeingModified: boolean,
+		scale: number
+	) {
+		const x = point.x - center.x;
+		const y = point.y - center.y;
+		const xScaled = x * scale;
+		const yScaled = y * scale;
+
+		return {
+			x: xScaled + center.x,
+			y: yScaled + center.y,
+			isBeingModified: isBeingModified
 		};
 	}
 
@@ -60,11 +81,14 @@
 
 			// Check if points need rotation
 			const c = getCentroid(points);
-			const rotatedPoints = points.map((p) => rotatePoint(p, c, rotationDegrees));
+			const rotatedPoints = points.map((p) =>
+				rotatePoint(p, c, p.isBeingModified, rotationDegrees)
+			);
+			const scaledPoints = rotatedPoints.map((p) => scalePoint(p, c, p.isBeingModified, scale));
 
-			ctx.moveTo(rotatedPoints[0].x, rotatedPoints[0].y);
-			for (let i = 1; i < rotatedPoints.length; i++) {
-				const p = rotatedPoints[i];
+			ctx.moveTo(scaledPoints[0].x, scaledPoints[0].y);
+			for (let i = 1; i < scaledPoints.length; i++) {
+				const p = scaledPoints[i];
 
 				ctx.lineTo(p.x, p.y);
 				ctx.fill();
@@ -76,8 +100,8 @@
 
 			// DOTS
 			ctx.fillStyle = 'blue';
-			for (let i = 0; i < rotatedPoints.length; i++) {
-				const p = rotatedPoints[i];
+			for (let i = 0; i < scaledPoints.length; i++) {
+				const p = scaledPoints[i];
 				ctx.beginPath();
 				ctx.arc(p.x, p.y, 5, 0, 2 * Math.PI); // Start point
 				ctx.fill();

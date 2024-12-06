@@ -42,4 +42,5 @@ export type Shape = {
     */
     points: { x: number, y: number, isBeingModified: boolean }[];
     rotationDegrees: number;
+    scale: number;
 };
