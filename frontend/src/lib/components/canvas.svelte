@@ -108,7 +108,9 @@
 					bezierEnd: { x: 0, y: 0 },
 					points: [{ x: cursorPosition.x, y: cursorPosition.y, isBeingModified: false }],
 					rotationDegrees: 0,
-					scale: 1
+					scale: 1,
+					offsetX: 0,
+					offsetY: 0
 				}
 			];
 

@@ -6,6 +6,8 @@
 	export let hexColor: string;
 	export let rotationDegrees: number = 0;
 	export let scale: number = 2;
+	export let offsetX: number = 0;
+	export let offsetY: number = 0;
 
 	type CanvasContext = {
 		registerDrawFunction: (fn: DrawFunction) => () => void;
@@ -79,16 +81,23 @@
 			ctx.fillStyle = hexColor;
 			ctx.beginPath();
 
-			// Check if points need rotation
 			const c = getCentroid(points);
+			/* PIPELINE
+			 *  rotation -> scaling -> offset
+			 */
 			const rotatedPoints = points.map((p) =>
 				rotatePoint(p, c, p.isBeingModified, rotationDegrees)
 			);
 			const scaledPoints = rotatedPoints.map((p) => scalePoint(p, c, p.isBeingModified, scale));
+			const offsetPoints = scaledPoints.map((p) => ({
+				x: p.x + offsetX,
+				y: p.y + offsetY,
+				isBeingModified: p.isBeingModified
+			}));
 
-			ctx.moveTo(scaledPoints[0].x, scaledPoints[0].y);
-			for (let i = 1; i < scaledPoints.length; i++) {
-				const p = scaledPoints[i];
+			ctx.moveTo(offsetPoints[0].x, offsetPoints[0].y);
+			for (let i = 1; i < offsetPoints.length; i++) {
+				const p = offsetPoints[i];
 
 				ctx.lineTo(p.x, p.y);
 				ctx.fill();
@@ -100,8 +109,8 @@
 
 			// DOTS
 			ctx.fillStyle = 'blue';
-			for (let i = 0; i < scaledPoints.length; i++) {
-				const p = scaledPoints[i];
+			for (let i = 0; i < offsetPoints.length; i++) {
+				const p = offsetPoints[i];
 				ctx.beginPath();
 				ctx.arc(p.x, p.y, 5, 0, 2 * Math.PI); // Start point
 				ctx.fill();
